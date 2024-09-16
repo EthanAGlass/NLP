@@ -370,10 +370,13 @@ C-h ? (Control h then ?) Opens the general help menu
 
 7. How do you get out of trouble?
 
+   If your in a situation where a command is running and is not
+   terminating, C-g should cancel out of it.
 # second clause added <2021-10-12 Tue>
 #
 8.  How do you split the window in half horizontally, so that one half is above the other?
 
+   C-x 2
 # second clause added <2021-10-12 Tue>
 #
 9.  How do you split the window in half vertically, so that the halves are side by side?
@@ -386,16 +389,21 @@ C-x 3 (Control x then 3)
 
 11.  What is a buffer?
 
+    Memory where text can be manipulated and stored, without being
+    automatically saved. Buffers have to be saved before their changes are
+    committed permanently.
+    
 12.  How do you get a list of all the buffers running in your emacs
      process?
 
 
 C-x C-b (Control x and Control b)
 
-
 13.  How do you jump to the top of the file without scrolling?
 
 14.  How do you jump to the bottom of the file without scrolling?
+
+    M->
 
 15.  How do you move down a page without scrolling?
 
@@ -407,6 +415,8 @@ C-v (Control c then v)
 
 17.  How do you move to the end of a line?
 
+    C-e
+    
 18.  How do you move to the beginning of a line?
 
 
@@ -442,6 +452,8 @@ Answer the remaining questions with a corpus of your choice  from the NLTK book.
 
 23.  [@23] What is the command to insert a python code block template?
 
+    < y tab
+
 24.  Load nltk and import the corpus using a python code block.
 
 #+BEGIN_SRC python
@@ -471,8 +483,30 @@ From Python script: 42,526
 
 26.  Print out the first 1000 tokens in your corpus.
 
+     #+BEGIN_SRC python :results output
+      from nltk.tokenize import word_tokenize
+      from nltk.corpus import twitter_samples as twit
 
-Ran a python script to obtain these results, will use your code, for this question
+      #print(twit.fileids())
+
+      tokens = [];
+
+      for file_id in twit.fileids():
+	# load raw text
+        text = twit.raw(file_id)
+
+	# tokenize the text
+	tokens.extend(word_tokenize(text))
+
+	# add tokens to set of unique tokens
+	if len(tokens) >=1000: break
+	 
+      print(' '.join(tokens[:1000]))
+      
+    #+END_SRC
+
+    #+results:
+    : { `` contributors '' : null , `` coordinates '' : null , `` text '' : `` hopeless for tmr : ( `` , `` user '' : { `` screen_name '' : `` yuwraxkim '' , `` time_zone '' : `` Jakarta '' , `` profile_background_image_url '' : `` http : //pbs.twimg.com/profile_background_images/585476378365014016/j1mvQu3c.png '' , `` profile_background_image_url_https '' : `` https : //pbs.twimg.com/profile_background_images/585476378365014016/j1mvQu3c.png '' , `` default_profile_image '' : false , `` url '' : null , `` profile_text_color '' : `` 000000 '' , `` following '' : false , `` listed_count '' : 3 , `` entities '' : { `` description '' : { `` urls '' : [ ] } } , `` utc_offset '' : 25200 , `` profile_sidebar_border_color '' : `` 000000 '' , `` name '' : `` yuwra \u2708 `` , `` favourites_count '' : 196 , `` followers_count '' : 1281 , `` location '' : `` wearegsd ; favor ; pucukfams ; barbx '' , `` protected '' : false , `` notifications '' : false , `` profile_image_url_https '' : `` https : //pbs.twimg.com/profile_images/622631732399898624/kmYsX_k1_normal.jpg '' , `` profile_use_background_image '' : true , `` profile_image_url '' : `` http : //pbs.twimg.com/profile_images/622631732399898624/kmYsX_k1_normal.jpg '' , `` lang '' : `` id '' , `` statuses_count '' : 19710 , `` friends_count '' : 1264 , `` profile_banner_url '' : `` https : //pbs.twimg.com/profile_banners/3078803375/1433287528 '' , `` geo_enabled '' : true , `` is_translator '' : false , `` contributors_enabled '' : false , `` profile_sidebar_fill_color '' : `` 000000 '' , `` created_at '' : `` Sun Mar 08 05:43:40 +0000 2015 '' , `` verified '' : false , `` profile_link_color '' : `` 000000 '' , `` is_translation_enabled '' : false , `` has_extended_profile '' : false , `` id_str '' : `` 3078803375 '' , `` follow_request_sent '' : false , `` profile_background_color '' : `` 000000 '' , `` default_profile '' : false , `` profile_background_tile '' : true , `` id '' : 3078803375 , `` description '' : `` \u21e8 [ V ] TravelGency \u2588 2/4 Goddest from Girls Day \u2588 92L \u2588 sucrp '' } , `` retweet_count '' : 0 , `` favorited '' : false , `` entities '' : { `` hashtags '' : [ ] , `` user_mentions '' : [ ] , `` urls '' : [ ] , `` symbols '' : [ ] } , `` source '' : `` < a href=\ '' https : //mobile.twitter.com\ '' rel=\ '' nofollow\ '' > Mobile Web ( M2 ) < /a > '' , `` truncated '' : false , `` geo '' : null , `` in_reply_to_status_id_str '' : null , `` is_quote_status '' : false , `` in_reply_to_user_id_str '' : null , `` place '' : null , `` in_reply_to_status_id '' : null , `` in_reply_to_screen_name '' : null , `` lang '' : `` en '' , `` retweeted '' : false , `` in_reply_to_user_id '' : null , `` created_at '' : `` Fri Jul 24 10:42:49 +0000 2015 '' , `` metadata '' : { `` iso_language_code '' : `` en '' , `` result_type '' : `` recent '' } , `` favorite_count '' : 0 , `` id_str '' : `` 624530164626534400 '' , `` id '' : 624530164626534400 } { `` contributors '' : null , `` coordinates '' : null , `` text '' : `` Everything in the kids section of IKEA is so cute . Shame I 'm nearly 19 in 2 months : ( `` , `` user '' : { `` screen_name '' : `` EveHollyHousley '' , `` time_zone '' : `` London '' , `` profile_background_image_url '' : `` http : //pbs.twimg.com/profile_background_images/776873880/f89d8aa869414e41eefd804284a3d95c.jpeg '' , `` profile_background_image_url_https '' : `` https : //pbs.twimg.com/profile_background_images/776873880/f89d8aa869414e41eefd804284a3d95c.jpeg '' , `` default_profile_image '' : false , `` url '' : null , `` profile_text_color '' : `` 333333 '' , `` following '' : false , `` listed_count '' : 0 , `` entities '' : { `` description '' : { `` urls '' : [ ] } } , `` utc_offset '' : 3600 , `` profile_sidebar_border_color '' : `` FFFFFF '' , `` name '' : `` Eve '' , `` favourites_count '' : 4759 , `` followers_count '' : 450 , `` location '' : `` Manchester '' , `` protected '' : false , `` notifications '' : false , `` profile_image_url_https '' : `` https : //pbs.twimg.com/profile_images/620302844093181952/M7IP4ZHa_normal.jpg '' , `` profile_use_background_image '' : false , `` profile_image_url '' : `` http : //pbs.twimg.com/profile_images/620302844093181952/M7IP4ZHa_normal.jpg '' , `` lang '' : `` en '' , `` statuses_count '' : 4384 , `` friends_count '' : 541 , `` profile_banner_url '' : `` https : //pbs.twimg.com/profile_banners/383849833/1435267039 '' , `` geo_enabled '' : true , `` is_translator '' : false , `` contributors_enabled '' : false , `` profile_sidebar_fill_color '' : `` DDEEF6 '' , `` created_at '' : `` Sun Oct 02 16:42:30 +0000 2011 '' , `` verified '' : false , `` profile_link_color '' : `` 0084B4 '' , `` is_translation_enabled '' : false , `` has_extended_profile '' : false , `` id_str '' : `` 383849833 '' , `` follow_request_sent '' : false , `` profile_background_color '' : `` C0DEED '' , `` default_profile '' : false , `` profile_background_tile '' : true , `` id '' : 383849833 , `` description '' : `` Lauv it \u2022 18 \u2022 Music Student '' } , `` retweet_count '' : 0 , `` favorited '' : false , `` entities '' : { `` hashtags '' : [ ] , `` user_mentions '' : [ ] , `` urls '' : [ ] , `` symbols '' : [ ] } , `` source '' : `` < a href=\ '' http : //twitter.com/download/iphone\ '' rel=\ '' nofollow\ '' > Twitter for iPhone < /a > '' , `` truncated '' : false ,
 
 
 27.  Why do the tokens include punctuation?
@@ -501,6 +535,45 @@ Ran a python script to obtain these results, will use your code, for this questi
 
 29.  [@29] How many of each of the principal modal verbs occur in your corpus?
 
+    #+BEGIN_SRC python :results output
+      from nltk.tokenize import word_tokenize
+      from nltk.corpus import twitter_samples as twit
+      from collections import Counter
+
+      # define the principal modal verbs
+      modal_verbs = ['can', 'could', 'may', 'might', 'shall', 'should', 'will', 'would']
+
+      # initialize counter to hold the counts
+      modal_counts = Counter()
+
+      # process each file in the twitter corpus
+      for file_id in twit.fileids():
+	# load raw text
+	text = twit.raw(file_id)
+
+	# tokenize the text
+	tokens = word_tokenize(text)
+
+	# count modal verbs
+	for token in tokens:
+	  if token.lower() in modal_verbs:
+	    modal_counts[token.lower()] += 1
+
+      # print the counts of each modal verb
+      output = "\n".join(f"{modal}: {count}" for modal, count in modal_counts.items())
+      print(output)
+    #+END_SRC
+
+    #+results:
+    : may: 4733
+    : can: 2280
+    : will: 4889
+    : might: 284
+    : would: 2711
+    : could: 839
+    : should: 596
+    : shall: 80
+    
 30.  How many unique bigrams are in your text?
 
 #+BEGIN_SRC python :results output
@@ -547,6 +620,50 @@ print(f"Unique bigram count is: {total_pairs}")
     write a regular expression that identifies *all* words in your corpus
     containing that prefix (remember that a prefix begins the word).
     What's the length of that group of words?
+
+    #+BEGIN_SRC python :results output
+      import re
+      from nltk.corpus import twitter_samples as twit
+
+      # regex pattern
+      pattern = r'\bhyper\w*'
+
+      matches = []
+
+      # loop through twitter files
+      for file_id in twit.fileids():
+	text = twit.raw(file_id)
+
+	# find matches for pattern
+	found_matches = re.findall(pattern, text, re.IGNORECASE)
+
+	# add matches to matches set
+	matches.extend(found_matches)
+
+      # cut out duplicate matches
+      unique_matches = set(matches)
+
+      for word in sorted(unique_matches):
+	print(word)
+
+      # print number of words
+      print('Number of words with prefix "hyper": ' + str(len(unique_matches)))
+    #+END_SRC
+
+    #+results:
+    #+begin_example
+    HYPERSTATlON
+    Hyper
+    Hyper67
+    HyperDruid
+    hyper
+    hyperbole
+    hyperbullies
+    hypercholesteloremia
+    hyperdruid
+    hypernumbers
+    Number of words with prefix "hyper": 10
+    #+end_example
 
 # revised to specify what to show
 #
@@ -704,6 +821,29 @@ In this list of exmaples alone, you can see the variation by choosing the same h
 35.  [@35] Ask NLTK what tags the Penn Treebank tagset uses for nouns and verbs
     (and show the result).
 
+    #+BEGIN_SRC python :results output
+      from nltk.corpus import treebank as tb
+
+      #tagset = tb._tagset
+      tagset = set(tag for word, tag in tb.tagged_words())
+
+      noun_tags = {tag for tag in tagset if tag.startswith('N')}
+      verb_tags = {tag for tag in tagset if tag.startswith('V')}
+
+      print("Nouns: ")
+      print(noun_tags)
+      print("Verbs: ")
+      print(verb_tags)
+
+
+    #+END_SRC
+
+    #+results:
+    : Nouns: 
+    : {'NNS', 'NNP', 'NN', 'NNPS'}
+    : Verbs: 
+    : {'VBN', 'VBP', 'VB', 'VBG', 'VBZ', 'VBD'}
+
 #  <<ran-sent>> 
 36. <<ran-sent>> Import the corpus and count the number of sentences in it, discarding
     any uninteresting front matter such as titles and chapter headings.
@@ -751,20 +891,128 @@ In this list of exmaples alone, you can see the variation by choosing the same h
 
   #+RESULTS:
   : The number of sentences in the corpus appears to be: 20567
-  : The random sentence retracted from the Twitter Corpus is: Well go win some money :) Good or lucky, I don't care
+  : The random sentence retracted from the Twitter Corpus is: #VoteSNP #SNP Yeah, that is pretty messed up
   
-
 
   # added explicit instruction to use a tagger <2023-10-20 Fri>
   37.  Use a tagger each token in your random sentence as 'VB'.
 
+#+begin_src python :results output
+  import nltk
+  from nltk.corpus import twitter_samples
+  import ssl
+  import random
+  import re
+  from nltk import word_tokenize
+  from nltk import DefaultTagger
+
+  ssl._create_default_https_context = ssl._create_unverified_context
+
+  nltk.download('twitter_samples')
+  file_ids = twitter_samples.fileids()
+
+  # loading all tweets from files
+  tweets = []
+  for id in file_ids:
+      tweets += twitter_samples.strings(id)
+
+  #Putting all of the tweets together before spliitting
+  all_tweets = " ".join(tweets)
+
+  #Split the tweets into sentences
+  #remove empty strings, and split by punctuation. 
+  sent = re.split(r'\.\s+|!\s+|\.\.\.\s*', all_tweets)
+
+  sent = [s.strip() for s in sent if s]
+
+  total_sent = len(sent)
+
+  rand_sent = random.choice(sent)
+
+  #This will clean up the sentence to avoid words with @ as the prefix and will make it empty. Similar to a title in my eyes, most sentences starting with RT: don't work well. 
+  sanitized_sent = re.sub(r'@\w+\b', '', rand_sent).strip()
+
+
+  sanitized_sent = re.sub(r'RT\s*:\s*.*', '', sanitized_sent).strip()
+  tokens = word_tokenize(sanitized_sent)
+  default_tagger = DefaultTagger('VB')
+  taggs = default_tagger.tag(tokens)
+  print("\n")
+  print(taggs)
+#+end_src
+
+#+results:
+: 
+: 
+: [('I', 'VB'), ('do', 'VB'), ("n't", 'VB'), ('mind', 'VB'), (':', 'VB'), ('p', 'VB'), ('ahahha', 'VB'), ('Chris', 'VB'), (',', 'VB'), ('that', 'VB'), ("'s", 'VB'), ('great', 'VB'), ('to', 'VB'), ('hear', 'VB'), (':', 'VB'), (')', 'VB'), ('Due', 'VB'), ('times', 'VB'), ('&', 'VB'), ('amp', 'VB'), (';', 'VB'), ('reminders', 'VB'), ('are', 'VB'), ('indeed', 'VB'), ('planned', 'VB'), (',', 'VB'), ('both', 'VB'), ('will', 'VB'), ('be', 'VB'), ('available', 'VB'), ('in', 'VB'), ('the', 'VB'), ('not', 'VB'), ('too', 'VB'), ('distant', 'VB'), ('future', 'VB')]
+    
   # <<silly-tags>>
   38. <<silly-tags>> Of course that's pretty silly, but we can make it even sillier.  Build
       a dictionary of the incorrectly tagged words in your sentence using the
       following tags: 
-  ,#+begin_src python
+#+begin_src python
   silly = ['FOO','BAR','EGO','NEED','ADS','DUCK','MANSE']
 #+end_src
+
+    #+begin_src python :results output
+      import nltk
+      from nltk.corpus import treebank as tb
+      from nltk.corpus import twitter_samples
+      import ssl
+      import random
+      import re
+      from nltk import ConditionalFreqDist
+      from nltk import word_tokenize
+      from nltk import DefaultTagger
+
+
+      silly = ['FOO','BAR','EGO','NEED','ADS','DUCK','MANSE']
+
+      ssl._create_default_https_context = ssl._create_unverified_context
+
+      nltk.download('twitter_samples')
+      file_ids = twitter_samples.fileids()
+
+      # loading all tweets from files
+      tweets = []
+      for id in file_ids:
+	tweets += twitter_samples.strings(id)
+
+      #Putting all of the tweets together before spliitting
+      all_tweets = " ".join(tweets)
+
+      #Split the tweets into sentences
+      #remove empty strings, and split by punctuation. 
+      sent = re.split(r'\.\s+|!\s+|\.\.\.\s*', all_tweets)
+
+      sent = [s.strip() for s in sent if s]
+
+      total_sent = len(sent)
+
+      rand_sent = random.choice(sent)
+
+      #This will clean up the sentence to avoid words with @ as the prefix and will make it empty. Similar to a title in my eyes, most sentences starting with RT: don't work well. 
+      sanitized_sent = re.sub(r'@\w+\b', '', rand_sent).strip()
+
+
+      sanitized_sent = re.sub(r'RT\s*:\s*.*', '', sanitized_sent).strip()
+
+      print(sanitized_sent)
+      words = sanitized_sent.split()
+      pos = {}
+      index = 0
+      for word in words:
+	pos[word] = silly[index]
+	index += 1
+	if index == 7:
+	  index = 0
+
+      print(pos)
+    #+end_src
+
+    #+results:
+    : How can Carwyn Jones (A LABOUR FM!) work for a man who would rather let the Tories into Downing Street than let the #SNP and #Plaid15 help?
+    : {'How': 'FOO', 'can': 'BAR', 'Carwyn': 'EGO', 'Jones': 'NEED', '(A': 'ADS', 'LABOUR': 'DUCK', 'FM!)': 'MANSE', 'work': 'FOO', 'for': 'BAR', 'a': 'EGO', 'man': 'NEED', 'who': 'ADS', 'would': 'DUCK', 'rather': 'MANSE', 'let': 'FOO', 'the': 'BAR', 'Tories': 'EGO', 'into': 'NEED', 'Downing': 'ADS', 'Street': 'DUCK', 'than': 'MANSE', '#SNP': 'EGO', 'and': 'NEED', '#Plaid15': 'ADS', 'help?': 'DUCK'}
 
 #  [[ran-sent]]
 
@@ -791,44 +1039,164 @@ rule i:   context:  X -> Y
     bigrams that begin with the tag =TO=.  Show the total parse and just
     the "to phrases" (just edit away the rest unless you feel like getting
     fancy). Use the following sentence to build and test your grammar:
-#+begin_src python
+#+begin_src python :results output
 
 # more convenient one-liner
 tj = [('He', 'PPS'), ('had', 'HVD'), ('nothing', 'UNK'), ('to', 'TO'), ('urge', 'UNK'), ('against', 'IN'), ('it', 'PPS'), (',', ','), ('but', 'CC'), ('still', 'RB'), ('resisted', 'UNK'), ('the', 'AT'), ('idea', 'UNK'), ('of', 'IN'), ('a', 'AT'), ('letter', 'UNK'), ('of', 'IN'), ('proper', 'UNK'), ('submission', 'UNK'), (';', '.'), ('and', 'CC'), ('therefore', 'UNK'), (',', ','), ('to', 'TO'), ('make', 'VB'), ('it', 'PPS'), ('easier', 'UNK'), ('to', 'TO'), ('him', 'PPO'), (',', ','), ('as', 'CS'), ('he', 'PPS'), ('declared', 'VBD'), ('a', 'AT'), ('much', 'AP'), ('greater', 'UNK'), ('willingness', 'UNK'), ('to', 'TO'), ('make', 'VB'), ('mean', 'UNK'), ('concessions', 'UNK'), ('by', 'IN'), ('word', 'NN'), ('of', 'IN'), ('mouth', 'UNK'), ('than', 'IN'), ('on', 'IN'), ('paper', 'UNK'), (',', ','), ('it', 'PPS'), ('was', 'BEDZ'), ('resolved', 'UNK'), ('that', 'CS'), (',', ','), ('instead', 'UNK'), ('of', 'IN'), ('writing', 'UNK'), ('to', 'TO'), ('Fanny', 'UNK'), (',', ','), ('he', 'PPS'), ('should', 'MD'), ('go', 'VB'), ('to', 'TO'), ('London', 'UNK'), (',', ','), ('and', 'CC'), ('personally', 'UNK'), ('intreat', 'UNK'), ('her', 'PP$'), ('good', 'JJ'), ('offices', 'UNK'), ('in', 'IN'), ('his', 'PP$'), ('favour', 'UNK'), ('.--', 'UNK'), ('"', 'UNK'), ('And', 'CC'), ('if', 'CS'), ('they', 'PPSS'), ('really', 'RB'), ('DO', 'UNK'), ('interest', 'NN'), ('themselves', 'PPLS'), (',"', 'UNK'), ('said', 'VBD'), ('Marianne', 'UNK'), (',', ','), ('in', 'IN'), ('her', 'PP$'), ('new', 'JJ'), ('character', 'UNK'), ('of', 'IN'), ('candour', 'UNK'), (',', ','), ('"', 'UNK'), ('in', 'IN'), ('bringing', 'UNK'), ('about', 'IN'), ('a', 'AT'), ('reconciliation', 'UNK'), (',', ','), ('I', 'PPSS'), ('shall', 'UNK'), ('think', 'VB'), ('that', 'CS'), ('even', 'RB'), ('John', 'NP'), ('and', 'CC'), ('Fanny', 'UNK'), ('are', 'BER'), ('not', '*'), ('entirely', 'UNK'), ('without', 'IN'), ('merit', 'UNK'), ('."', 'UNK')]
 
 # for prettier printing
 
-tj = [('He', 'PPS'), ('had', 'HVD'), ('nothing', 'UNK'), ('to', 'TO'), ('urge', 'UNK'), 
-      ('against', 'IN'), ('it', 'PPS'), (',', ','), ('but', 'CC'), ('still', 'RB'), 
-      ('resisted', 'UNK'), ('the', 'AT'), ('idea', 'UNK'), ('of', 'IN'), ('a', 'AT'), 
-      ('letter', 'UNK'), ('of', 'IN'), ('proper', 'UNK'), ('submission', 'UNK'), (';', '.'), 
-      ('and', 'CC'), ('therefore', 'UNK'), (',', ','), ('to', 'TO'), ('make', 'VB'), 
-      ('it', 'PPS'), ('easier', 'UNK'), ('to', 'TO'), ('him', 'PPO'), (',', ','), 
-      ('as', 'CS'), ('he', 'PPS'), ('declared', 'VBD'), ('a', 'AT'), ('much', 'AP'), 
-      ('greater', 'UNK'), ('willingness', 'UNK'), ('to', 'TO'), ('make', 'VB'), 
-      ('mean', 'UNK'), ('concessions', 'UNK'), ('by', 'IN'), ('word', 'NN'), ('of', 'IN'), 
-      ('mouth', 'UNK'), ('than', 'IN'), ('on', 'IN'), ('paper', 'UNK'), (',', ','), ('it', 'PPS'), 
-      ('was', 'BEDZ'), ('resolved', 'UNK'), ('that', 'CS'), (',', ','), 
-      ('instead', 'UNK'), ('of', 'IN'), ('writing', 'UNK'), ('to', 'TO'), 
-      ('Fanny', 'UNK'), (',', ','), ('he', 'PPS'), ('should', 'MD'), ('go', 'VB'), 
-      ('to', 'TO'), ('London', 'UNK'), (',', ','), ('and', 'CC'), ('personally', 'UNK'), 
-      ('intreat', 'UNK'), ('her', 'PP$'), ('good', 'JJ'), ('offices', 'UNK'), ('in', 'IN'), 
-      ('his', 'PP$'), ('favour', 'UNK'), ('.--', 'UNK'), ('"', 'UNK'), ('And', 'CC'), 
-      ('if', 'CS'), ('they', 'PPSS'), ('really', 'RB'), ('DO', 'UNK'), ('interest', 'NN'), 
-      ('themselves', 'PPLS'), (',"', 'UNK'), ('said', 'VBD'), ('Marianne', 'UNK'), 
-      (',', ','), ('in', 'IN'), ('her', 'PP$'), ('new', 'JJ'), ('character', 'UNK'), 
-      ('of', 'IN'), ('candour', 'UNK'), (',', ','), ('"', 'UNK'), ('in', 'IN'), 
-      ('bringing', 'UNK'), ('about', 'IN'), ('a', 'AT'), ('reconciliation', 'UNK'), 
-      (',', ','), ('I', 'PPSS'), ('shall', 'UNK'), ('think', 'VB'), ('that', 'CS'), 
-      ('even', 'RB'), ('John', 'NP'), ('and', 'CC'), ('Fanny', 'UNK'), ('are', 'BER'), 
-      ('not', '*'), ('entirely', 'UNK'), ('without', 'IN'), ('merit', 'UNK'), ('."', 'UNK')]
+from nltk.corpus import treebank as tb
+from nltk import bigrams
+from nltk import ConditionalFreqDist
+from nltk import word_tokenize
+from nltk import RegexpParser
+
+grammar = "TO_PHRASE: {<TO> <NN|NNS|NNP|NNPS|PPS|PPO|PP$|VB|VBD|VBG|VBN|VBP|VBZ|JJ|RB|IN|CS|MD|AP|UNK|DT>}"
+#grammar = "NP: {<DT>?<JJ>*<NN>}"
+cp = RegexpParser(grammar) 
+result = cp.parse(tj) 
+print(result)
+  
+print("\nTo Phrases:")
+for subtree in result.subtrees():
+  if subtree.label() == 'TO_PHRASE':
+    print(subtree)
+
 #+end_src
+
+#+results:
+#+begin_example
+(S
+  He/PPS
+  had/HVD
+  nothing/UNK
+  (TO_PHRASE to/TO urge/UNK)
+  against/IN
+  it/PPS
+  ,/,
+  but/CC
+  still/RB
+  resisted/UNK
+  the/AT
+  idea/UNK
+  of/IN
+  a/AT
+  letter/UNK
+  of/IN
+  proper/UNK
+  submission/UNK
+  ;/.
+  and/CC
+  therefore/UNK
+  ,/,
+  (TO_PHRASE to/TO make/VB)
+  it/PPS
+  easier/UNK
+  (TO_PHRASE to/TO him/PPO)
+  ,/,
+  as/CS
+  he/PPS
+  declared/VBD
+  a/AT
+  much/AP
+  greater/UNK
+  willingness/UNK
+  (TO_PHRASE to/TO make/VB)
+  mean/UNK
+  concessions/UNK
+  by/IN
+  word/NN
+  of/IN
+  mouth/UNK
+  than/IN
+  on/IN
+  paper/UNK
+  ,/,
+  it/PPS
+  was/BEDZ
+  resolved/UNK
+  that/CS
+  ,/,
+  instead/UNK
+  of/IN
+  writing/UNK
+  (TO_PHRASE to/TO Fanny/UNK)
+  ,/,
+  he/PPS
+  should/MD
+  go/VB
+  (TO_PHRASE to/TO London/UNK)
+  ,/,
+  and/CC
+  personally/UNK
+  intreat/UNK
+  her/PP$
+  good/JJ
+  offices/UNK
+  in/IN
+  his/PP$
+  favour/UNK
+  .--/UNK
+  "/UNK
+  And/CC
+  if/CS
+  they/PPSS
+  really/RB
+  DO/UNK
+  interest/NN
+  themselves/PPLS
+  ,"/UNK
+  said/VBD
+  Marianne/UNK
+  ,/,
+  in/IN
+  her/PP$
+  new/JJ
+  character/UNK
+  of/IN
+  candour/UNK
+  ,/,
+  "/UNK
+  in/IN
+  bringing/UNK
+  about/IN
+  a/AT
+  reconciliation/UNK
+  ,/,
+  I/PPSS
+  shall/UNK
+  think/VB
+  that/CS
+  even/RB
+  John/NP
+  and/CC
+  Fanny/UNK
+  are/BER
+  not/*
+  entirely/UNK
+  without/IN
+  merit/UNK
+  ."/UNK)
+
+To Phrases:
+(TO_PHRASE to/TO urge/UNK)
+(TO_PHRASE to/TO make/VB)
+(TO_PHRASE to/TO him/PPO)
+(TO_PHRASE to/TO make/VB)
+(TO_PHRASE to/TO Fanny/UNK)
+(TO_PHRASE to/TO London/UNK)
+#+end_example
 
 #  [[to-gram]], 40
 42.  [@42] What do you observe in your results for question [[to-gram]]?  Why do you think
     this is happening?
 
-
+    It looks like everything is working, it's picking out the proper
+    bigrams beginning with "TO" and everything is going the way it's
+    supposed to. One observation is that it appears that words tagged "UNK"
+    are more likely to follow the "TO", so that could be something
+    interesting. 
 
 
 * Grading Scale
