@@ -763,6 +763,12 @@ Answer the remaining questions with a corpus of your choice  from the NLTK book.
 : Stemmed list of matches of pattern \banti\w*\b
 : {'anti', 'antiausterityuk', 'antiracismday', 'antichankai', 'antinezushi', 'anticip', 'antiscot', 'antiscous'}
 
+Observation: Here, it seems as though the porter stemmer finds less words
+than the pref-regex method. "Anti" matches here are much fewer than in the
+previous problem. I imagine that's because the pref-regex method looked for
+ALL words with the prefix, whereas the porter stemmer removes suffixes and
+has a more selective process.
+
 ** 8 Tags, Tagsets, and Tagging
 
 35.  [@35] Ask NLTK what tags the Penn Treebank tagset uses for nouns and verbs
@@ -933,6 +939,10 @@ Answer the remaining questions with a corpus of your choice  from the NLTK book.
 
 #+RESULTS:
 : [('It', 'PPS'), ('is', 'BEZ'), ('expected', 'VBN'), ('that', 'CS'), ('common', 'UNK'), ('shares', 'NNS'), ('equal', 'UNK'), ('to', 'TO'), ('the', 'AT'), ('number', 'NN'), ('of', 'IN'), ('units', 'UNK'), ('outstanding', 'UNK'), ('--', '--'), ('about', 'IN'), ('108', 'UNK'), ('million', 'CD'), ('on', 'IN'), ('Sept.', 'UNK'), ('30', 'CD'), ('--', '--'), ('will', 'MD'), ('be', 'BE'), ('issued', 'UNK'), ('*-3', 'UNK'), ('during', 'IN'), ('the', 'AT'), ('first', 'OD'), ('quarter', 'UNK'), ('of', 'IN'), ('1990', 'UNK'), ('.', '.')]
+
+Observation: Training on the most commonly used 1000 words actually creates
+a well rounded tagger. Most of the words here are tagged properly, and
+there appear to be only a few that have defaulted to UNK.
 
 #  ran-sent and bo-tagger
 40. [@40] For your random sentence found in question [[ran-sent]] tagged with
