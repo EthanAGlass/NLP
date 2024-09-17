@@ -1,0 +1,1209 @@
+# this is ../me/mimi/chores/teaching/current/nlp/class_notes/homework/hw1.org
+
+
+#+title: Homework 1:  Getting Started and the Structural Units of Language
+#+author: Toni Kazic
+#+date: Fall, 2024
+
+# revised text of qs 31--34 <2021-08-25 Wed>
+#
+# revised text of qs 38 (bo-tagger) and 39 <2021-09-14 Tue>
+
+
+#+SETUPFILE: "../../../common/preamble.org"
+#+LATEX_CLASS: article
+#+OPTIONS: toc:nil
+#+OPTIONS: ^:nil
+
+#+LATEX_HEADER: \usepackage{langsci-avm}
+# http://ftp.math.purdue.edu/mirrors/ctan.org/macros/latex/contrib/langsci-avm/langsci-avm.pdf
+
+#+LATEX_HEADER: \newcommand{\grmr}[2]{\ensuremath{\mathrm{#1} & \,\longrightarrow\, \mathrm{#2}}}
+#+LATEX_HEADER: \newcommand{\txtgrmr}[2]{\ensuremath{\mathrm{#1} \,\longrightarrow\, \mathrm{#2}}}
+#+LATEX_HEADER: \newcommand{\grmrhs}[1]{\ensuremath{& \,\longrightarrow\, \mathrm{#1} }}
+#+LATEX_HEADER: \newcommand{\wa}[1]{\type{\textnormal{\w{#1}}}}
+
+# compile with pdflatex
+#
+# Kazic, 3.11.2020
+
+
+# fixed question numbering on latex export, at the cost of removing line
+# feeds and a little hard-wiring.
+#
+# It's possible to set the org-empty-line-terminates-plain-lists
+#
+# Kazic, 31.8.2021
+#
+# finally, cross-linking on list items!
+# https://stackoverflow.com/questions/28151373/orgmode-referring-to-an-item-in-a-numbered-list
+#
+# Kazic, 1.9.2021
+
+
+* Introduction
+
+This homework lays the foundation for the course to help you work smoothly
+through the semester.  It starts our work on several course objectives and
+introduces the basic structural units of languages.  We'll explore some
+linguistic and computational approaches to these units.
+
+
+
+* Who's Who and Solution Patterns
+<<whoswho>>
+
+** Lead Person:  purple
+
+
+** Group Members
+
+| first name last name | color                                |
+|----------------------+--------------------------------------|
+|                      | purple \color{violet}\rule{5mm}{3mm} |
+|                      | green \color{green}\rule{5mm}{3mm}   |
+|                      | yellow \color{yellow}\rule{5mm}{3mm} |
+
+
+
+** Three Member Solution Patterns
+
+$i$ is the question number.
+
+#+begin_center
+#+ATTR_LaTeX: :mode inline-math :environment array
+| \text{color}                  | \text{draft solution} | \text{revise solution} |
+|-------------------------------+----------------+-----------------|
+| green \color{green}\rule{5mm}{3mm}   | i \mod 3 = 1   | i \mod 3 = 0    |
+| yellow \color{yellow}\rule{5mm}{3mm} | i \mod 3 = 2   | i \mod 3 = 1    |
+| purple \color{violet}\rule{5mm}{3mm} | i \mod 3 = 0   | i \mod 3 = 2    |
+#+end_center
+
+
+** Two Member Solution Patterns
+
+| color                         | draft solution | revise solution |
+|-------------------------------+----------------+-----------------|
+| green \color{green}\rule{5mm}{3mm} | odds           | evens           |
+| yellow \color{yellow}\rule{5mm}{3mm} | evens          | odds            |
+
+
+
+
+* General Instructions
+
+   + /Fill out the group members table and follow the solution patterns/ in
+     Section [[whoswho]].
+
+   + /If the question is unclear, tell me your interpretation of it as part
+     of your answer./  Feel free to ask about the questions in class or on
+     the Slack channel (use =@channel= as others will probably be puzzled
+     too). 
+
+   + /For questions using corpora, use the corpus of the lead person./
+
+   + /Put your draft answers right after each question using a *complete,
+     functional* =org= mode code or example block./ Make sure your code
+     block is complete and functional by testing it in your copy of this
+     homework file.
+
+   + /Each group member reviews the others' draft solutions and you revise them together/.
+
+   + /Discuss each other's draft and reviews, finalizing the answers./
+
+   + /Show all your work: code, results, and analysis./  Does your code
+     work in this file and produce *exactly* the results you show? 
+
+   + /Post the completed file to Canvas no later than noon on the Tuesday
+     indicated/ in the [[../syllabus.org::schedule][schedule in the syllabus]], naming your file with each
+     person's first name (no spaces in the file name, and don't forget the
+     =.org= extension!).  Only one person should submit the final file.
+
+
+   
+* Hints
+
+** Follow the instructions in [[file:../notes.org::tech][the technical setup section of the notes]].
+Briefly: install [[https://www.gnu.org/software/emacs/download.html][emacs]] for your operating systems; take its tutorial;
+install [[file:../../../common/mechanics/pythonesque.org][python and nltk (including the data)]]; practice the examples in
+[[file:../mechanics/python_org_mode.org][python_org_mode.org]]; and explore the [[http://www.nltk.org/nltk_data/][various corpora available]].
+
+
+** *Don't use :session in your code block header!* 
+It makes the code blocks interdependent, and I don't want to make a mistake
+when cutting and pasting your code to test it.  I should be able to
+reproduce your results exactly by running your code block in =org=, so
+if it doesn't run you're headed for toast.
+
+
+** Don't overthink this!
+
+The point of using =NLTK= is to learn it, not re-invent it unless there is a
+very good reason.  If you mistrust an answer it gives you, then coding from
+scratch and /comparing the results as part of your answer/ is good.
+
+
+This also applies to =scikit-learn=!
+
+
+
+
+** Make sure you get the right version of the book and documentation when googling.
+
+There are many examples drawn from the first edition of the book and NLTK
+2.0 out on the web.  Syntax and functionality have changed between NLTK 2.0
+and 3.0:  here's [[https://streamhacker.com/2014/12/02/nltk-3/][a short rundown on these]].
+
+
+
+** Some Variations on Loading Python Modules
+
++ If you just say "import nltk", python doesn't enter the names of any of
+  the functions contained within the nltk module into the current symbol
+  table.  So when you want to call a function, you have to use the dot
+  notation:
+#+BEGIN_EXAMPLE
+nltk.FCN_NAME()
+#+END_EXAMPLE
+
+
+
+
+
+
++ You can import specific functions into the current symbol table:
+#+BEGIN_EXAMPLE
+from nltk import FCN
+#+END_EXAMPLE
+
+
+And when you do this, they can be called directly:
+#+BEGIN_EXAMPLE
+FCN()
+#+END_EXAMPLE
+
+
+
+
++ Or, you can import all of the functions at once:
+#+BEGIN_EXAMPLE
+from nltk import *
+#+END_EXAMPLE
+
+
+and then call them directly:
+#+BEGIN_EXAMPLE
+FCN()
+#+END_EXAMPLE
+
+
+Importing all the functions in a package or module is generally frowned
+upon by the Pythonistas as one wouldn't necessarily know all the names of the 
+functions in a module, and they don't want python to confuse the symbols.  While
+you can see the current symbol table by typing 
+#+BEGIN_EXAMPLE
+dir()
+#
+# or, that for a particular package,
+#
+dir(nltk)
+#+END_EXAMPLE
+you might want to play it safe.
+
+
+
++ Finally, you might want to abbreviate a function's (or submodule's) name when you import it:
+#+BEGIN_EXAMPLE
+import matplotlib.pyplot as plt
+. . .
+plt.savefig()
+#+END_EXAMPLE
+
+
+
+** What Can I Do with This Data Structure?
+
+Python implements many data structures, like integers (int), lists ([]),
+tuples (()), sets ({}), and dictionaries (aka associative arrays or
+key-value lists).  To quickly see what built-in functions are available
+for a data structure and get a little help on them:
+
+#+begin_src python
+#
+# define an empty list
+#
+L = []
+dir(L)
+
+t = ()
+dir(t)
+
+help(t.count)
+
+# type q to get back to the python prompt
+
+#+end_src
+
+
+
+
+
+
+
+
+** If you don't see any output with #+begin_src python :results output, try a print()
+
+
+
+
+** defaultdict is an essentially empty data structure!
+
+For example, it's *not* a dictionary of words and tags.
+
+
+
+** Get the right input for the frequency distributions.
+
+In a conditional frequency distribution built from a tagged corpus, the
+keys are the tokens and the values are the tags.  NLTK calls the keys
+/conditions/: for example, the condition for the value = 'AT' is that the
+key = 'the'.  That's very different from the unconditioned frequency
+distribution.
+
+
+
+
+** Useful Web Sites
+
+You may find the [[https://docs.python.org/3/tutorial/index.html][official python tutorial]] useful, especially the earlier sections (I did).
+
+[[https://docs.python.org/3/faq/index.html][A collection of Python FAQs]].
+
+[[http://www.nltk.org/py-modindex.html][Index to the current versions of NLTK modules and functions.]]  The examples
+in the book may not always be current with the state of the code.
+
+
+[[https://en.wikipedia.org/wiki/English_prefix][Wikipedia has a fairly thorough list]] of prefixes, but let's use the list of the most
+common prefixes found at [[http://dictionary.cambridge.org/us/grammar/british-grammar/prefixes][the Cambridge English Grammar]] site:
+
+#+name: prefixes
+#+begin_src python :results output
+prefixes = ['anti','auto','de','dis','down','extra','hyper','il','im','in','ir','inter',
+             'mega','mid','mis','non','over','out','post','pre','pro','re','semi','sub',
+             'super','tele','trans','ultra','un','under','up']
+#+end_src
+
+
+
+
+
+
+
+* Questions 
+
+# revised <2021-10-14 Thu> to eliminate freebie
+
+
+
+** What are Your GitHub Handles and Corpus Preferences?  Fill Out Here *and DM me the answers.*
+
+1. [@1] If you don't already have one, get a [[https://github.com/][GitHub handle]] and DM this table to
+   me on Slack.
+
+| first name | color                                | GitHub handle |
+|------------+--------------------------------------+---------------|
+|            | green \color{green}\rule{5mm}{3mm}   |               |
+|            | yellow \color{yellow}\rule{5mm}{3mm} |               |
+|            | purple \color{violet}\rule{5mm}{3mm} |               |
+
+For each person in your team, please list in order of decreasing preference
+your top three choices for corpora.  Be careful to choose a corpus, not a
+model, lexicon, or other lexical aid.  Suggestion: load interesting corpora
+and get a few sentences from each.
+
+Please DM me the filled out table on Slack by our third class so I can
+resolve any conflicts!
+
+| first name | first choice | second choice | third choice |
+|------------+--------------+---------------+--------------|
+|            |              |               |              |
+|            |              |               |              |
+|            |              |               |              |
+
+
+
+
+
+
+
+** 21 emacs questions
+
+# see
+# https://stackoverflow.com/questions/28351465/emacs-orgmode-do-not-insert-line-between-headers
+
+Answer the emacs questions giving the KEYSTROKES, following the emacs
+conventions for the control and meta keys.  Some questions require answers
+in English: stick those in an example block too.
+
+
+2. [@2] How do you start emacs from the command line?
+   Install emacs, add to path, then enter "emacs".
+   Alternatively, find the execuatable in file structure   and run that.
+
+3. How do you open a file?
+   In emacs, place cursor in file and press enter.
+   Alternatively, C-x C-f "file path" enter.
+
+4. How do you edit it?
+   After opening, emacs is in edit mode and can be edited.
+   Unless user is in special mode like Dired or a read-only buffer.
+
+5. How do you save it?
+   C-x C-s
+
+6. How do you get help without googling?
+   C-h opens help system
+   t opens tutorial
+   k to describe keybinding
+   f to describe function
+   v to describe variablepen
+
+7. How do you get out of trouble?
+   quit - C-g
+   close current buffer C-x k
+   close current window C-x 0
+   undo c-/ or C-x u
+   Exit emacs C-x C-c
+
+# second clause added <2021-10-12 Tue>
+#
+8.  How do you split the window in half horizontally, so that one half is above the other?
+   Horizontal split C-x 2
+
+# second clause added <2021-10-12 Tue>
+#
+9.  How do you split the window in half vertically, so that the halves are side by side?
+   Vertical split C-x 3
+
+10.  How long can you repeat the operations in questions 8 and 9?
+    This depends on the size of OS window. Command will recursively split a window in half untill a limit is reached.
+
+11.  What is a buffer?
+    A buffer is a temporary flexible container for text editing and process management. Buffer function includes but is not limited to
+    1. Text and file editing
+    2. Modes - including org mode, text mode and python mode
+    3. Running processes/code - M-x shell M-x run-python
+    4. Buffers can have multiple views
+    5. Buffers can interact with other buffers
+    6. Can interact with version control
+
+12.  How do you get a list of all the buffers running in your emacs process?
+    C-x C-b
+
+13.  How do you jump to the top of the file without scrolling?
+    C-home
+
+14. How do you jump to the bottom of the file without scrolling?
+    C-end
+
+15. How do you move down a page without scrolling?
+    C-v
+
+16. How do you move up a page without scrolling?
+    M-v
+
+17. How do you move to the end of a line?
+    end
+
+18. How do you move to the beginning of a line?
+    home
+
+19. What is the point?
+    Current position of cursor in text
+
+20. What is the mark?
+    Special position in buffer that marks a boundary with the cursor.
+    C-spc to set mark
+    C-g to cancel mark
+
+# revised to specify mark and point, <2022-10-12 Wed>    
+21.  Why are the mark and point useful?
+    These are useful for setting up boundaries for text manipulation.
+    Used for cut C-w
+    used for copy M-w
+    used for paste C-y
+    Can also use it navigate back to a point in the file.
+    exchange mark and point C-x C-x
+    
+
+22.  How do you exit emacs?
+    C-x C-c
+
+Answer the remaining questions with a corpus of your choice  from the NLTK book.
+
+
+** 6 python/nltk questions
+
+
+23.  [@23] What is the command to insert a python code block template?
+    C-c C-, src python
+
+    #+begin_src python :results output
+      print('hey')
+    #+end_src
+
+    #+RESULTS:
+    : hey
+
+    to execute C-c C-c
+
+
+24.  Load nltk and import the corpus using a python code block.
+    #+begin_src python :results output
+      import nltk
+      from nltk.corpus import twitter_samples
+      nltk.download('twitter_samples')
+      positive_tweets = twitter_samples.strings('positive_tweets.json')
+      
+      print(positive_tweets[:2])
+
+
+    #+end_src
+
+    #+RESULTS:
+    : ['#FollowFriday @France_Inte @PKuchly57 @Milipol_Paris for being top engaged members in my community this week :)', '@Lamb2ja Hey James! How odd :/ Please call our Contact Centre on 02392441234 and we will be able to assist you :) Many thanks!']
+
+25.  How many unique tokens are in your corpus?
+    #+begin_src python :results output
+      import nltk
+      from nltk.corpus import twitter_samples
+      from nltk.tokenize import word_tokenize
+
+      nltk.download('twitter_samples')
+      nltk.download('punkt_tab')
+      tweets = twitter_samples.strings()
+      tokens = [word_tokenize(tweet) for tweet in tweets]
+      flat_tokens = [token for sublist in tokens for token in sublist]
+      print(f'Number of unique tokens: {len(set(flat_tokens))}')
+    #+end_src
+
+    #+RESULTS:
+    : Number of unique tokens: 42639
+
+26.  Print out the first 1000 tokens in your corpus.
+
+    #+begin_src python :results output
+      import nltk
+      import sys
+      import io
+      from nltk.corpus import twitter_samples
+      from nltk.tokenize import word_tokenize
+
+      sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+      nltk.download('twitter_samples')
+      nltk.download('punkt_tab')
+      tweets = twitter_samples.strings()
+      tokens = [word_tokenize(tweet) for tweet in tweets]
+      flattened_list = [item for sublist in tokens for item in sublist]
+      print(flattened_list[:1000])
+    #+END_SRC
+
+    #+RESULTS:
+    : ['hopeless', 'for', 'tmr', ':', '(', 'Everything', 'in', 'the', 'kids', 'section', 'of', 'IKEA', 'is', 'so', 'cute', '.', 'Shame', 'I', "'m", 'nearly', '19', 'in', '2', 'months', ':', '(', '@', 'Hegelbon', 'That', 'heart', 'sliding', 'into', 'the', 'waste', 'basket', '.', ':', '(', '“', '@', 'ketchBurning', ':', 'I', 'hate', 'Japanese', 'call', 'him', '``', 'bani', "''", ':', '(', ':', '(', '”', 'Me', 'too', 'Dang', 'starting', 'next', 'week', 'I', 'have', '``', 'work', "''", ':', '(', 'oh', 'god', ',', 'my', 'babies', "'", 'faces', ':', '(', 'https', ':', '//t.co/9fcwGvaki0', '@', 'RileyMcDonough', 'make', 'me', 'smile', ':', '(', '(', '@', 'f0ggstar', '@', 'stuartthull', 'work', 'neighbour', 'on', 'motors', '.', 'Asked', 'why', 'and', 'he', 'said', 'hates', 'the', 'updates', 'on', 'search', ':', '(', 'http', ':', '//t.co/XvmTUikWln', 'why', '?', ':', '(', '``', '@', 'tahuodyy', ':', 'sialan', ':', '(', 'https', ':', '//t.co/Hv1i0xcrL2', "''", 'Athabasca', 'glacier', 'was', 'there', 'in', '#', '1948', ':', '-', '(', '#', 'athabasca', '#', 'glacier', '#', 'jasper', '#', 'jaspernationalpark', '#', 'alberta', '#', 'explorealberta', '#', '…', 'http', ':', '//t.co/dZZdqmf7Cz', 'I', 'have', 'a', 'really', 'good', 'm', '&', 'amp', ';', 'g', 'idea', 'but', 'I', "'m", 'never', 'going', 'to', 'meet', 'them', ':', '(', '(', '(', '@', 'Rampageinthebox', 'mare', 'ivan', ':', '(', '@', 'SophiaMascardo', 'happy', 'trip', ',', 'keep', 'safe', '.', 'see', 'you', 'soon', ':', '*', ':', '(', 'I', "'m", 'so', 'tired', 'hahahah', ':', '(', '@', 'GrumpyCockney', 'With', 'knee', 'replacements', 'they', 'get', 'you', 'up', '&', 'amp', ';', 'about', 'the', 'same', 'day', '.', ':', '-', '(', 'Ouch', '.', 'relate', 'to', 'the', '``', 'sweet', 'n', "'", 'sour', "''", 'kind', 'of', '``', 'bi-polar', "''", 'people', 'in', 'your', 'life', '...', 'cuz', 'my', 'life', '...', 'is', 'FULL', 'of', 'them', '...', ':', '(', '@', 'aysegul_k', 'pleasse', ':', '(', '@', 'SexyKalamo', 'im', 'not', 'sure', 'tho', ':', '(', 'I', 'feel', 'stupid', 'I', 'just', 'ca', "n't", 'seem', 'to', 'grasp', 'the', 'basics', 'of', 'digital', 'painting', 'and', 'nothing', 'I', "'ve", 'been', 'researching', 'is', 'helping', 'any', ':', '(', 'Good', 'Lord', '.', ':', '(', 'https', ':', '//t.co/nC9LkYUUvO', 'I', 'feel', 'lonely', 'someone', 'talk', 'to', 'me', 'guys', 'and', 'girls', ':', '(', '@', 'TheOnlyRazzYT', '@', 'imarieuda', '@', 'EiroZPegasus', '@', 'AMYSQUEE', '@', 'UdotV', 'No', 'Assignment', ',', 'but', 'we', 'have', 'Project', '.', ':', '(', 'really', '?', '😩', 'just', 'want', 'to', 'play', 'video', 'games/watch', 'movies', 'with', 'someone', ':', '(', 'choreographing', 'is', 'hard', ':', '(', '@', 'xo_raaaaayyy_xo', 'what', 'the', 'email', 'link', '?', 'Still', 'says', 'that', 'it', "'s", 'no', 'longer', 'available', ':', '(', 'http', ':', '//t.co/iuiaIOynnx', 'cries', 'bc', 'i', 'miss', 'mingming', 'so', 'much', ':', '-', '(', 'Sorry', ':', '(', 'https', ':', '//t.co/Q5TAYjrQ8K', '@', 'Giannivnni', 'mom', 'so', 'far', 'away', ':', '(', 'We', "'re", 'truly', 'sorry', '@', 'chrisbrown', ':', '(', 'have', 'a', 'safe', 'flight', '.', 'and', 'my', 'friends', ':', '(', '@', 'bbygjrlmgc', 'oh', ':', '(', 'i', 'hate', 'when', 'that', 'happens', 'i', 'get', 'so', 'sad', 'over', 'it', 'too', 'Oh', '.', 'Dog', 'has', 'pee', '’', 'd', 'in', 'my', '@', 'Kneewax', 'bag', '.', ':', '-', '(', 'So', 'I', 'can', '’', 't', 'take', 'it', 'to', '#', 'NewWine15', '@', 'YM_Dish98', 'doushite', ':', '(', '?', '@', 'Charliescoco', '@', 'reeceftcharliie', '@', 'SimonCowell', 'too', 'late', ':', '(', 'It', 'sucks', 'so', 'much', 'been', 'sick', 'i', 'was', 'plan', 'to', 'start', 'work', 'on', 'my', 'first', 'gundam', 'to', 'night', 'but', 'nope', '.', ':', '(', 'MY', '$', '$', '$', '$', '2', 'DOLLAR', ':', '(', '😭😭😭😭😭😭', 'http', ':', '//t.co/oI0pYGUsDi', '@', 'martylog', 'Listening', 'back', 'to', 'old', '@', 'DaveGorman', 'shows', '(', 'I', 'know', ',', 'I', "'m", 'weird', ')', '.', 'Just', 'got', 'to', 'u', 'leaving', ':', 'might', 'give', 'up', '.', 'It', 'was', 'pale', 'imitation', 'after', ':', '-', '(', 'i', 'went', 'in', 'the', 'sea', 'and', 'now', 'have', 'a', 'massive', 'fucking', 'rash', 'all', 'over', 'my', 'body', 'and', 'it', "'s", 'the', 'most', 'painful', 'thing', 'ever', 'i', 'want', 'to', 'go', 'home', ':', '(', '(', '@', 'dethronedlwt', 'hi', '.', 'Why', 'are', 'you', 'absent', '?', ':', '(', 'My', 'Gran', 'tho', '!', '!', '!', 'She', 'knew', 'but', 'did', "n't", 'care', 'to', 'tell', 'me', ':', '(', '(', '@', 'rowysoIjp', 'SAME', 'IT', "'S", 'SO', 'CUTE', 'I', 'LOVE', 'IT', 'SO', 'MUCH', 'I', 'WISH', 'THERE', 'WOULD', 'BE', 'A', 'SEQUEL', ':', '(', '@', 'imallyssagail', 'busy', 'sa', 'school', ':', '(', 'next', 'time', 'love', 'yah', '!', 'xx', 'Ouucchhh', 'one', 'of', 'my', 'wisdom', 'teeth', 'are', 'coming', 'through', ':', '(', '@', 'StevenLDN', 'frightening', 'case', '.', 'It', 'really', 'gets', 'to', 'you', ':', '(', 'pret', ':', '(', '(', 'wkwkw', "''", '@', 'WLK_Jhope', ':', 'Verfied', '@', 'WLK_Hyemi91', 'be', 'active', ',', 'do', "n't", 'forget', 'to', 'follow', 'all', 'member', '.', 'Thanks', 'for', 'join', '.', 'Goodbye', "''", 'You´ve', 'got', 'me', 'in', 'chains', 'for', 'your', 'love', ':', '´', '(', '—', 'a', 'sentir-se', 'incompleta', 'it', "'s", 'okay', '..', 'but', '..', ':', '(', '(', '@', 'njhftbiebs', 'why', 'did', "n't", 'you', 'go', 'on', 'Wednesday', ':', '(', '@', 'radicalj', 'Marvellous', '-', 'not', '.', 'How', 'very', 'thwarting', ':', '-', '(', '@', 'ceeels95', 'Awh', 'what', "'s", 'the', 'chances', '😩', 'when', 'u', 'off', 'to', 'Zante', '?', 'We', 'need', 'to', 'do', 'something', ':', '-', '(', 'x', '@', 's0ulfl0wr', 'When', "'s", 'your', 'birthday', '?', ':', '(', '@', 'brittleyouth', '@', 'Tom_J_Allen', '@', 'AndrewFairbairn', '@', 'batemanesque', '@', 'Hegelbon', '@', 'jameswheeler', 'that', 'was', 'the', 'worst', 'part', 'and', 'I', 'still', 'feel', 'bad', 'about', 'it', ':', '(', 'audraesar', ':', 'All', 'these', 'sushi', 'pics', 'on', 'my', 'tl', 'are', 'driving', 'me', 'craaaazzyy', ':', '(', 'Really', 'want', 'this', ':', '(', 'http', ':', '//t.co/36tSy81iMi', 'Popped', 'like', 'a', 'helium', 'balloon', '..', ':', '-', '(', '#', 'ClimateChange', '#', 'CC', 'California', "'s", 'powerful', 'and', 'influential', 'air', 'pollution', 'watchdog', '.', ':', 'Califor', '...', 'http', ':', '//t.co/OVU4p2qWfH', '#', 'UniteBlue', '#', 'Tcot', ':', '-', '(', '@', 'itsNotMirna', 'I', 'was', 'so', 'sad', 'because', 'Elhaida', 'was', 'robbed', 'by', 'the', 'juries', ':', '(', 'she', 'came', '10th', 'in', 'the', 'televoting', '#', 'ClimateChange', '#', 'CC', 'Idaho', 'will', 'not', 'restrict', 'fishing', 'despite', 'regional', 'drought-linked', 'die-of', '...', 'http', ':', '//t.co/jJboDo6LYZ', '#', 'UniteBlue', '#', 'Tcot', ':', '-', '(', '#', 'ClimateChange', '#', 'CC', 'Abrupt', 'climate', 'change', 'may', 'have', 'doomed', 'mammoths', 'and', 'other', 'megafauna', ',', 'sc', '...', 'http', ':', '//t.co/taVMCz37E7', '#', 'UniteBlue', '#', 'Tcot', ':', '-', '(', '#', 'ClimateChange', '#', 'CC', 'Australia', "'s", "'dirtiest", "'", 'power', 'station', 'considers', "'clean", 'energy', "'", 'biomass', '...', 'http', ':', '//t.co/YeQABq6tsL', '#', 'UniteBlue', '#', 'Tcot', ':', '-', '(', '#', 'ClimateChange', '#', 'CC', 'It', 'ai', "n't", 'easy', 'being', 'green', 'if', 'you', "'re", 'a', 'golf', 'course', 'in', 'California', '.', ':', 'Ulti', '...', 'http', ':', '//t.co/La82RXzTs2', '#', 'UniteBlue', '#', 'Tcot', ':', '-', '(', '@', 'Mess0019', 'Well', 'I', 'am', 'sure', 'your', 'work', 'day', 'is', 'over', 'before']
+
+27.  Why do the tokens include punctuation?
+    Puncuation is part of the language and carries both syntactical and semantical meaning. Therefore they need to be included during processing in order to understand the text. Different tokenizers handle puncuation differently, but cannot exclude puncuation as that is a loss of important information. 
+
+28.  How many unique tokens are in the first 1000?
+
+    #+BEGIN_SRC python :results output
+        import nltk
+	import sys
+	import io
+	from nltk.corpus import twitter_samples
+	from nltk.tokenize import word_tokenize
+
+	sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+	nltk.download('twitter_samples')
+	nltk.download('punkt_tab')
+	tweets = twitter_samples.strings()
+	tokens = [word_tokenize(tweet) for tweet in tweets]
+	flattened_list = [item for sublist in tokens for item in sublist]
+	first_1000 = flattened_list[:1000]
+	unique_tokens = set(first_1000)
+	num_unique = len(unique_tokens)
+	print(f'Number of unique tokens in first thousand: {num_unique}')
+
+    #+END_SRC
+
+    #+RESULTS:
+    : Number of unique tokens in first thousand: 470
+
+
+
+
+
+
+
+** 6 morpheme/morphosyntax/N-gram questions
+
+
+29.  [@29] How many of each of the principal modal verbs occur in your corpus?
+    #+begin_src python :results output
+      import nltk
+      import sys
+      import io
+      from nltk.corpus import twitter_samples
+      from nltk.tokenize import word_tokenize
+
+      sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+      nltk.download('twitter_samples')
+      nltk.download('punkt_tab')
+      tweets = twitter_samples.strings()
+      tokens = [word_tokenize(tweet.lower()) for tweet in tweets]
+      flattened_tokens = [item for sublist in tokens for item in sublist]
+      pmv = {'can',"can't","cannot", 'could',"couldn't", 'may', 'might', 'must',"mustn't", 'shall',"shan't", 'should',"shouldn't", 'will',"won't", 'would', "wouldn't"}
+      # should be account for musty or cans or the name will?
+      pmv_counts = {modal: flattened_tokens.count(modal) for modal in pmv}
+      print(pmv_counts)
+
+
+    #+END_SRC
+
+    #+RESULTS:
+    : {'would': 1570, "can't": 0, "won't": 0, 'cannot': 0, 'can': 1037, "wouldn't": 0, 'will': 2356, "couldn't": 0, 'might': 114, 'must': 206, 'may': 293, "mustn't": 0, 'should': 325, "shan't": 0, "shouldn't": 0, 'shall': 17, 'could': 504}
+
+30.  How many unique bigrams are in your text?
+
+      #+begin_src python :results output
+      import nltk
+      import sys
+      import io
+      from nltk.corpus import twitter_samples
+      from nltk.tokenize import word_tokenize
+      from nltk import bigrams
+
+      sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+      nltk.download('twitter_samples')
+      nltk.download('punkt_tab')
+      tweets = twitter_samples.strings()
+      tokens = [word_tokenize(tweet.lower()) for tweet in tweets]
+      bigram_list = []
+      for tweet in tokens:
+	  bigram_list.append(list(bigrams(tweet)))
+      #print(bigram_list[:2])
+      flattened_bigrams = [bigram for tweet in bigram_list for bigram in tweet]
+      #print(flattened_bigrams[:100])
+      num_unique_bigrams = len(set(flattened_bigrams))
+      print(f"Number of unique bigrams: {num_unique_bigrams}")
+      #+end_src
+
+    #+RESULTS:
+    : Number of unique bigrams: 152741
+
+# stopword caution
+31.  How many bigrams contain the modal \w{can}?  Compute both for all and the
+    unique bigrams.  Don't exclude stopwords!
+       #+begin_src python :results output
+	 import nltk
+	 import sys
+	 import io
+	 import re
+	 from nltk.corpus import twitter_samples
+	 from nltk.tokenize import word_tokenize
+	 from nltk import bigrams
+
+	 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+	 nltk.download('twitter_samples')
+	 nltk.download('punkt_tab')
+	 tweets = twitter_samples.strings()
+	 tokens = [word_tokenize(tweet.lower()) for tweet in tweets]
+	 bigram_list = []
+	 for tweet in tokens:
+	     bigram_list.append(list(bigrams(tweet)))
+	 #print(bigram_list[:2])
+	 bigram_list = [bigram for tweet in bigram_list for bigram in tweet]
+	 #print(flattened_bigrams[:100])
+	 unique_bigrams = set(bigram_list)
+	 bigram_can_count = sum(sublist.count('can') + sublist.count("can't") for sublist in bigram_list)
+	 print(f"Non unique 'can' modal count: {bigram_can_count}")
+	 unique_bigram_can_count = sum(sublist.count('can') + sublist.count("can't") for sublist in unique_bigrams)
+	 print(f"unique 'can' modal count: {unique_bigram_can_count}")
+       #+end_src
+
+       #+RESULTS:
+       : Non unique 'can' modal count: 2045
+       : unique 'can' modal count: 394
+
+# revised to insist on a prefix
+#
+# added link and pointer to the list of prefixes, fall 2023
+#
+# <<pref-regex>>
+32.  <<pref-regex>> Choose a prefix from the [[prefixes][list above]] (line 288) and
+    write a regular expression that identifies *all* words in your corpus
+    containing that prefix (remember that a prefix begins the word).
+    What's the length of that group of words?
+
+# anti is the prefix
+
+#+begin_src python :results output
+
+  import nltk
+  import sys
+  import io
+  import re
+  from nltk.corpus import twitter_samples
+  print('start')
+  sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+  nltk.download('twitter_samples')
+  tweets = twitter_samples.strings()
+  tweet_string = ' '.join(tweets).lower()
+  pattern = r'\banti\w*\b'
+  total_count = len(re.findall(pattern, tweet_string))
+  print(f'Number of "anti" matches: {total_count}')
+
+#+end_src
+
+#+RESULTS:
+: Number of "anti" matches: 215
+
+# revised to specify what to show
+#
+# clarified it's the set of words thats meant <2023-10-20 Fri>
+#
+# pref-regex
+33.  <<sort-set>> Sort the group of words in problem [[pref-regex]] in alphabetical order (show your code and
+    results) and study it.  Do you see multiple forms of the same headword?
+    Show some examples.
+
+# prefixes: im, de, in
+
+#+begin_src python :results output
+  import nltk
+  import sys
+  import io
+  import re
+  from nltk.corpus import twitter_samples
+  print('start')
+  sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+  nltk.download('twitter_samples')
+  tweets = twitter_samples.strings()
+  tweet_string = ' '.join(tweets).lower()
+  patterns = [r'\bin\w*\b', r'\bim\w*\b',r'\bde\w*\b',r'\banti\w*\b']
+  matches = [re.findall(pattern, tweet_string) for pattern in patterns]
+  for sublist, pattern in zip(matches, patterns):
+      sublist.sort()
+      setlist = set(sublist)
+      print(f'Matches of pattern {pattern}:')
+      print(setlist)
+#+end_src
+
+#+RESULTS:
+: Matches of pattern \bin\w*\b:
+: {'inhaler', 'indy2', 'indiaquinn', 'indeed', 'investment', 'inspector', 'invade', 'incapable', 'indirecting', 'intoxicationall', 'initial', 'intolerance', 'inspiration', 'incompetent', 'invented', 'interestingly', 'inapropriate', 'inconsiderate', 'interpreter', 'indietracksfest', 'ingeniusbooks', 'insert', 'ingridmolina19', 'ind', 'input', 'interesting', 'incredible', 'includes', 'integration', 'inconvenient', 'intelligentsia', 'inkymole', 'invest', 'inherit', 'inequality', 'influenced', 'interracial', 'invite', 'interpedia_', 'insult', 'infocussa', 'incomers', 'infrastructure', 'indian', 'inte', 'initially', 'instantly', 'indirag', 'involving', 'injurys', 'insecurities', 'influencers', 'interrupting', 'introducing', 'industries', 'inept', 'internationalist', 'infant', 'inside', 'interests', 'inokumat', 'incompetence', 'injustice', 'incredulous', 'interview', 'inficate', 'indépendantiste', 'ingat', 'information', 'infiltrated', 'intentionshigh', 'infrared', 'incall', 'inly', 'insecure', 'inuk', 'interrogation', 'invoices', 'incongruous', 'interest', 'into', 'ina8ijihh0', 'intrigued', 'indifference', 'intend', 'instead', 'independent_ie', 'infaarmy', 'infra', 'insulting', 'inconsistency', 'interloper', 'infyref2', 'indicating', 'insanely', 'increases', 'indie', 'intlboost', 'inappropriate', 'influx', 'inaccurate', 'indiabtl', 'internet', 'interactive', 'intolarance', 'insisted', 'insidious', 'indies', 'injury', 'inherited', 'insidiousmovie', 'inaccuracies', 'included', 'increaseenergy', 'insnpwetrust', 'interrupts', 'incentive', 'in', 'independent_sco', 'intro', 'inflicted', 'inspirit', 'inclined', 'interms', 'intern', 'inadvertently', 'indonesian', 'indira', 'infamonstah', 'inkproducer', 'insecurity', 'indicated', 'inspectorsclews', 'ini8rcaptp', 'indie_shell', 'independent', 'involvement', 'inglewood', 'independance', 'inugamikun', 'inathancameron', 'inevitably', 'incl', 'incredibly', 'indicate', 'insertcointees', 'inch', 'incoherent', 'intelligent', 'inane', 'integrity', 'incompleta', 'investigations', 'inkfunnel', 'innumerable', 'insha', 'inespsousa9', 'inaccessible', 'inactive', 'insolvent', 'intriguing', 'inputs', 'interact', 'inform', 'inf1dvkhzk', 'interflorauk', 'inheriting', 'institutional', 'indp', 'ini', 'introduce', 'indiana', 'invisible', 'inthesticks', 'ing', 'insincere', 'insisting', 'insists', 'indicative', 'intending', 'intake', 'in2016', 'intentions', 'investigation', 'inmay84', 'inyan99', 'inability', 'init', 'initiative', 'infinitelysy', 'independence', 'indiedev', 'inquest', 'indyref', 'indiandeathlock', 'incomplete', 'insults', 'industry', 'inches', 'inxpresscoazur', 'infinite', 'intials', 'interpret', 'insight', 'indy', 'inca', 'insidecroydon', 'instore', 'increase', 'include', 'indyreiver', 'incoming', 'innie', 'invitation', 'influenclifford', 'insane', 'investing', 'influential', 'inuyasha', 'insect', 'intel', 'indication', 'intermittent', 'insightful_ew', 'interviews', 'intellectual', 'infamy', 'indycyclist', 'invasion', 'inthelittlewood', 'insta', 'interactions', 'invested', 'inventory', 'inevitable', 'interviewing', 'insanomania', 'invests', 'indiankulture', 'intent', 'indonesia', 'indyref2', 'instagram', 'interrupted', 'interaction', 'infocffm', 'insonia', 'inaction', 'independant', 'inital', 'infirmities', 'indyvoices', 'install', 'infront', 'insanity', 'infispirit_', 'introduction', 'inshallah', 'inspy', 'insist', 'intellect', 'individually', 'indyfortheguy', 'inquisitor', 'internships', 'including', 'indiscot', 'influence', 'invataonline', 'intimidate', 'innovation', 'intolerant', 'infamously', 'interessant', 'interested', 'individuals', 'internal', 'insomnia', 'in1984', 'inflation', 'inverness', 'increasingly', 'instincts', 'intelligence', 'involves', 'inheritance', 'intention', 'increased', 'infinitesim4l', 'infection', 'increasing', 'injured', 'intently', 'int', 'instrument', 'inherent', 'infographic', 'insunwetrust', 'insight4news', 'inne', 'ink', 'instyle_uk', 'instamood', 'interactively', 'income', 'indicted', 'intended', 'insightful', 'invalid', 'indecisos', 'indypolitics', 'instagood', 'inddfx', 'innovate', 'insurance', 'independents', 'info', 'inspired', 'incredibleindia', 'injure', 'incorrect', 'instructions', 'interjections', 'intv', 'infnt', 'installed', 'investigate', 'inspection', 'incident', 'innocent', 'internship', 'informs', 'individual', 'internacionales', 'invoke', 'influencer', 'indo', 'indirect', 'influencing', 'indep', 'incomprehensible', 'inequa', 'international', 'inspite', 'introducted', 'introduced', 'interviewed', 'intends', 'invictus47diddy', 'inspire', 'infinite7muse', 'inbox', 'inhuy4fkdg', 'inatall', 'inc', 'incarnate', 'involve', 'inconsistent', 'indiscolady', 'insufficient', 'incr', 'ineedfeminismbecause', 'inksharkman', 'institution', 'instrumental', 'incidence', 'infinityandbion', 'involved', 'informed', 'indulgence', 'inspchin', 'indians', 'inspirationa', 'instant', 'indiemusic', 'insyaallah', 'inter', 'intense', 'instance', 'instability', 'inverclyde', 'inner', 'invited', 'independently', 'insane_chorri', 'incompetance', 'india'}
+: Matches of pattern \bim\w*\b:
+: {'imply', 'immediate', 'imitation', 'imports', 'impressed', 'imartyn', 'imnadies', 'image', 'implication', 'imbinggoo', 'immigrants', 'imtommcshane', 'impairs', 'impression', 'imran', 'imamjan123', 'imac', 'imac_too', 'imintoher', 'improvement', 'imysm', 'immigrant', 'implies', 'imali_imacunt', 'imperative', 'improve', 'imynnx', 'imho', 'imstevewilson', 'immigratio', 'imrefleex', 'imperialist', 'imminent', 'implementing', 'im_mskittenns', 'ims', 'imjackyeah', 'import', 'imrankhanpti', 'imploded', 'imalsobored', 'imcherrycblls', 'imgregcook', 'imq0knerhq', 'imma', 'imnotmrgreen', 'imvotingukip', 'img', 'imry2bxuzd', 'imo', 'impastel', 'impossible', 'imsoff_', 'imagining', 'immigrationuk', 'immense', 'impressing', 'imaginative', 'impartial', 'imposing', 'im', 'immovable', 'imvkohli', 'impeccable', 'imagine', 'imrizzagaddi', 'im5lfheuij', 'imikerussell', 'imtoxic21', 'imprisonment', 'impartialdebate', 'impersonation', 'imafaithreyes', 'imitatia', 'imbe3uvoqo', 'important', 'immigrantsolution', 'implode', 'impressive', 'imkhwezin', 'images', 'impo', 'im_irrelephant', 'imkellyhoppen', 'implica', 'improved', 'im_soexcited', 'impresses', 'imagi', 'imjicellmoreno', 'impatientraider', 'imjustkindle', 'implodes', 'imperiallamian', 'imarpita', 'implement', 'importance', 'imjanexoxo', 'imhibanoor', 'iminthe45per', 'implosion', 'implodingpika', 'imaginiarry', 'imraina', 'imajsaclaimant', 'implore', 'importantly', 'impose', 'imveryverysorry', 'imjoannet', 'ima', 'impartiality', 'immediately', 'imarieuda', 'imangelinavalen', 'imvnaj', 'improving', 'imaging', 'imy', 'im_bharathi', 'imclt7fxft', 'imiss', 'imallyssagail', 'immature', 'immigrantdeath', 'impact', 'imposed', 'immigration', 'imcmillan', 'immune', 'imsorry', 'imdanielpadilla', 'immanu3', 'imlexapadilla', 'imperial'}
+: Matches of pattern \bde\w*\b:
+: {'deewaniveronica', 'developer', 'destination', 'deutschland', 'dezwog', 'determination', 'deeper', 'derp', 'depressive', 'defaced', 'definitively', 'devan4director', 'deaf', 'der', 'dehgeeuiem', 'deantd', 'dekbannan', 'deffo', 'deoradh1', 'debraruh', 'descend', 'deploying', 'definition', 'degakdzsjn', 'democraticaudit', 'denouncing', 'deepxcape', 'devastatingly', 'desplante', 'deviousliz', 'dealt', 'dense', 'dennis', 'details', 'desc', 'deci', 'devo', 'description', 'demi', 'dev', 'demostrates', 'desperately', 'descrimination', 'definately', 'departments', 'dernier', 'delighted', 'deepthroat', 'deano042', 'deixen', 'developing', 'dels', 'deathcure', 'defecit', 'denisedenise__', 'deadline', 'debbyryan_06', 'defin', 'debating', 'delicious', 'decladon', 'describe', 'dermotodw', 'dedicatedfan', 'designer', 'dekayedd', 'desserts', 'del_sharpe', 'devil', 'demoorsophie', 'deo', 'design', 'deres', 'demba', 'deliberately', 'dealing', 'declared', 'derail', 'defcon', 'detail', 'declarations', 'depopulation', 'detective', 'deliver', 'demo', 'deported', 'deregulated', 'deport', 'demiroberts_', 'deviation', 'desk', 'dea', 'declined', 'deardads1979', 'derekrootboy', 'deleicious', 'demonise', 'desperate', 'defini', 'death', 'delirious', 'decently', 'desperation', 'det', 'deacti', 'detal', 'dentist', 'debt', 'de', 'demanding', 'designthinkmake', 'denmark', 'dept', 'defense', 'derabbie', 'declanwelsh', 'derekscott1984', 'despite', 'deai', 'deactivate', 'define', 'deals', 'defenitely', 'demands', 'despise', 'debts', 'devon', 'dekhi', 'denied', 'despicable', 'debatable', 'deal', 'debbie', 'depend', 'delevingne', 'declare', 'defects', 'deck', 'devolved', 'delivers', 'derekmay16', 'destinynews_net', 'deceived', 'decided', 'defilibrator', 'destroy', 'de2on', 'dealwithbarbie', 'decision', 'despair', 'determined', 'devastating', 'democrats', 'delta', 'decline', 'defense_gouv', 'deserved', 'depth', 'delight', 'devoncarlscn', 'dem凋落したなあ', 'delights', 'defying', 'destiinyy303', 'declind', 'derek_gta', 'dethink2survive', 'devious', 'demongrrl51', 'debate', 'deny', 'deathcoretie', 'descarta', 'definitel', 'deth', 'deficit', 'dedicating', 'deterrent', 'deva_matt', 'deborahjaneorr', 'deterrence', 'deathwish', 'desert', 'desktop', 'defacing', 'dejavousagain', 'defended', 'deemed', 'designideaspics', 'despaired', 'defiancegame', 'deeply', 'delafro_', 'defende', 'dens', 'devjoshi10', 'desire', 'descenthypnosis', 'deflate', 'demise', 'debian', 'demissexuai', 'deltsoulman', 'dental', 'deleted', 'defeatism', 'depleted', 'debate2015', 'deboridah86', 'deltadelaney', 'deprives', 'deletedbymps', 'deactivated', 'debcridland', 'depends', 'deosn', 'degrees', 'denis', 'denisefronteras', 'deestrellados', 'debrakidd', 'dey', 'denissely', 'descends', 'deniers', 'delayed', 'defending', 'denim', 'deathly', 'declares', 'despondently', 'definetly', 'deeziyah', 'defenders', 'deter', 'decrying', 'demeaning', 'delish', 'develop', 'detailed', 'dedicated', 'dearslim', 'deu', 'denniselazaro', 'democratically', 'dety', 'deilsheid', 'development', 'delve', 'devolve', 'denywenyxw', 'deedeegy', 'deaths', 'degeneres', 'demand', 'del', 'dejavu', 'devout', 'deputy', 'decent', 'described', 'defect', 'deathofgrass', 'device', 'delivery', 'denial', 'desirable', 'decade', 'deixe', 'devolution', 'developers', 'derekbateman2', 'delivered', 'demonisation', 'delhi', 'democratic', 'defence', 'decolonisedsoul', 'destructive', 'deali', 'democrat', 'designs', 'dessa', 'debated', 'devastation', 'defici', 'detests', 'dennislami', 'dead', 'declaring', 'dear', 'denerivery506', 'describes', 'deefizzy', 'defined', 'derby', 'decides', 'deserve', 'delusional', 'destinydatabase', 'delightful', 'decide', 'deficits', 'deborah', 'deary', 'deffonotpc', 'definit', 'debates', 'delph', 'december', 'deepti_ahmd', 'delays', 'defiant', 'deargreenplace8', 'deregulating', 'deathbybaconsmell', 'deidrebrock', 'denies', 'des67jphfi', 'dealings', 'debacle', 'depts', 'despiteofficial', 'deniserayon_', 'denbobanatie', 'delete', 'degrassi', 'depression', 'dewsbury', 'defo', 'deceitful', 'dean0133', 'deceptions', 'deciding', 'deepikapadukone', 'denocte', 'desiboy34783', 'destroyed', 'defeat', 'degree', 'delayedmornings', 'dems', 'def', 'deminished', 'default', 'deprived', 'devils', 'determine', 'debbiegee41', 'deej_bng', 'defenceless', 'denvilda1966', 'depths', 'decriminalise', 'deedee_50fly', 'destroying', 'dependencies', 'deserves', 'dearnataliee', 'descended', 'devoted', 'demeanour', 'deskellybts', 'democracy', 'depressing', 'derekhcampbell', 'defends', 'denisegohemun', 'debit', 'denise', 'demuslim', 'deirdreokane1', 'deporsempre1', 'dece', 'dented_deni', 'delegate', 'declaration', 'deligracy', 'devices', 'decency', 'des', 'defend', 'defections', 'describing', 'detest', 'declining', 'dearly', 'debbeedale', 'debatte', 'delphy', 'demeans', 'depending', 'de7onil6go', 'dem', 'denims', 'denying', 'dez7bft5fx', 'definitely', 'dent', 'deennya', 'deltadaily', 'denisealicia_', 'department', 'derekklahn', 'denounced', 'decimated', 'desmond', 'delay', 'designed', 'dethronedlwt', 'deadlytheroadie', 'deflect', 'definite', 'dermot', 'deadmau5', 'dedication', 'deregulation', 'deya', 'dekwpr9y7n', 'despising', 'decencycommon', 'departmental', 'deathoflabour', 'debut', 'deixat', 'desaieshita', 'derek', 'derogatoty', 'deepdale62', 'dealsuthaonotebachao', 'desperatedave', 'deep', 'developed', 'decorating', 'den', 'devotrav', 'der_germane', 'demented', 'deadly', 'dessert', 'dew', 'deprive', 'deltagoodrem', 'der_bluthund', 'decisions', 'decades', 'departure', 'deterred', 'demn', 'detector', 'defensive', 'dearestdaryl', 'derogatory', 'deposit', 'delved', 'debatingfools', 'demonised', 'deluded'}
+: Matches of pattern \banti\w*\b:
+: {'antiausterityuk', 'antichankai', 'antiracismday', 'antinezushi', 'anticipation', 'antiscouse', 'anti', 'antiscot'}
+
+# revised to specify what to show, changed back-pointer
+# fixed back-pointer again
+#
+# clarified it's the set of words thats meant <2023-10-20 Fri>
+#
+# pref-regex
+34.  Now use the Porter stemmer on the group of words from problem [[sort-set]] (again, show
+    your code and results).  What do you notice?
+
+#+begin_src python :results output
+  import nltk
+  import sys
+  import io
+  import re
+  from nltk.stem import PorterStemmer
+  from nltk.corpus import twitter_samples
+  print('start')
+  sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+  nltk.download('twitter_samples')
+  porter_stemmer = PorterStemmer()
+  tweets = twitter_samples.strings()
+  tweet_string = ' '.join(tweets).lower()
+  patterns = [r'\bin\w*\b', r'\bim\w*\b',r'\bde\w*\b',r'\banti\w*\b']
+  matches = [re.findall(pattern, tweet_string) for pattern in patterns]
+  stemmed_list = []
+  for sublist  in matches:
+      stemmed_sublist = [porter_stemmer.stem(word) for word in sublist]
+      stemmed_list.append(stemmed_sublist)
+  for sublist, pattern in zip(stemmed_list, patterns):
+      sublist.sort()
+      setlist = set(sublist)
+      print(f'Stemmed list of matches of pattern {pattern}')
+      print(setlist)
+
+#+end_src
+
+#+RESULTS:
+: Stemmed list of matches of pattern \bin\w*\b
+: {'incred', 'india', 'invent', 'inan', 'ineedfeminismbecaus', 'infocffm', 'instor', 'infinit', 'indp', 'infinite7mus', 'infispirit_', 'injuri', 'innumer', 'indyref2', 'init', 'indira', 'indycyclist', 'infic', 'input', 'insecur', 'inspirationa', 'inc', 'independent_i', 'inathancameron', 'injur', 'instal', 'instrument', 'insomnia', 'infiltr', 'insidiousmovi', 'incent', 'incredul', 'indyreiv', 'interm', 'invest', 'indyfortheguy', 'interrupt', 'inli', 'indonesia', 'interject', 'interest', 'intermitt', 'in1984', 'inequ', 'infocussa', 'independ', 'infrastructur', 'ini', 'initi', 'incorrect', 'inflict', 'inokumat', 'instagood', 'instanc', 'industri', 'inform', 'incl', 'intent', 'internship', 'inverclyd', 'instant', 'intellect', 'increas', 'ini8rcaptp', 'invok', 'indiankultur', 'inspect', 'insonia', 'instagram', 'invad', 'insight4new', 'inact', 'intolar', 'indi', 'insyaallah', 'ind', 'instabl', 'indiffer', 'insidecroydon', 'infra', 'invit', 'insane_chorri', 'indiaquinn', 'inspir', 'indirag', 'int', 'inmay84', 'inspi', 'inatal', 'inner', 'insanomania', 'indeciso', 'inevit', 'inaccur', 'interview', 'indiedev', 'incomprehens', 'insunwetrust', 'intrigu', 'introduc', 'inconsider', 'inventori', 'inhal', 'instruct', 'inbox', 'indyvoic', 'interestingli', 'indiana', 'investig', 'indiscot', 'instead', 'indiscoladi', 'influenc', 'interpret', 'inca', 'invis', 'involv', 'ingat', 'intel', 'intlboost', 'increaseenergi', 'insnpwetrust', 'indie_shel', 'integr', 'insist', 'insidi', 'interlop', 'inthestick', 'infinitelysi', 'inspirit', 'intv', 'inspectorsclew', 'intimid', 'insan', 'infaarmi', 'intial', 'intoler', 'inept', 'instinct', 'incap', 'incomplet', 'inhuy4fkdg', 'innoc', 'innov', 'insightful_ew', 'inspit', 'intellig', 'interflorauk', 'interess', 'intens', 'introduct', 'indirect', 'inabl', 'includ', 'inthelittlewood', 'intro', 'increasingli', 'inkproduc', 'insha', 'incid', 'invas', 'insta', 'injustic', 'interraci', 'indiemus', 'indep', 'influenclifford', 'insolv', 'inf1dvkhzk', 'infinitesim4l', 'internacional', 'inconsist', 'ing', 'interrog', 'infograph', 'inkymol', 'in', 'infinityandbion', 'instamood', 'intelligentsia', 'inconveni', 'into', 'indy2', 'inshallah', 'incompleta', 'insertcointe', 'indo', 'indépendantist', 'interpedia_', 'indypolit', 'ingridmolina19', 'ink', 'inadvert', 'invalid', 'indict', 'insect', 'insight', 'inespsousa9', 'inher', 'infami', 'influx', 'inxpresscoazur', 'incr', 'inn', 'indian', 'infront', 'inspector', 'inclin', 'insid', 'invoic', 'independent_sco', 'inglewood', 'inappropri', 'indiabtl', 'inequa', 'info', 'instantli', 'institut', 'inaccuraci', 'inflat', 'inni', 'incom', 'infyref2', 'inddfx', 'interact', 'intern', 'intellectu', 'indonesian', 'inugamikun', 'insincer', 'inver', 'incoher', 'invataonlin', 'infrar', 'inch', 'inquest', 'internationalist', 'infnt', 'internet', 'inuyasha', 'insult', 'incompet', 'indiandeathlock', 'inspchin', 'ingeniusbook', 'inaccess', 'intoxicational', 'intak', 'infamonstah', 'inter', 'incarn', 'indyref', 'infirm', 'incredibleindia', 'instyle_uk', 'incal', 'indietracksfest', 'infect', 'intentionshigh', 'insert', 'ina8ijihh0', 'inquisitor', 'inuk', 'indulg', 'individu', 'intend', 'infam', 'inherit', 'inyan99', 'indic', 'inkfunnel', 'inksharkman', 'inapropri', 'influenti', 'insur', 'incongru', 'invictus47diddi', 'insuffici', 'in2016', 'infant', 'inde'}
+: Stemmed list of matches of pattern \bim\w*\b
+: {'impress', 'im', 'imartyn', 'imrankhanpti', 'immin', 'imraina', 'imsorri', 'imkhwezin', 'imran', 'imac', 'imagi', 'imi', 'impair', 'imlexapadilla', 'im_bharathi', 'imjanexoxo', 'imcmillan', 'imperi', 'imposs', 'im5lfheuij', 'imsoff_', 'implos', 'imag', 'immatur', 'imo', 'imvnaj', 'imafaithrey', 'imperson', 'imintoh', 'impartialdeb', 'imparti', 'imali_imacunt', 'imveryverysorri', 'imclt7fxft', 'imper', 'imperiallamian', 'implic', 'imiss', 'implement', 'immens', 'impecc', 'imaginiarri', 'imarieuda', 'imajsaclaim', 'imcherrycbl', 'immun', 'imynnx', 'imysm', 'impo', 'imma', 'imac_too', 'imgregcook', 'imangelinavalen', 'imvkohli', 'implod', 'implor', 'imrefleex', 'imamjan123', 'imnadi', 'iminthe45p', 'imjoannet', 'imtoxic21', 'improv', 'imbe3uvoqo', 'imarpita', 'impastel', 'imtommcshan', 'impli', 'im_mskittenn', 'impos', 'imjicellmoreno', 'ima', 'imvotingukip', 'immigr', 'imallyssagail', 'immigrantdeath', 'imrizzagaddi', 'immedi', 'imdanielpadilla', 'imprison', 'immigratio', 'immanu3', 'imikerussel', 'imjustkindl', 'imkellyhoppen', 'impact', 'imhibanoor', 'imbinggoo', 'im_irreleph', 'imagin', 'img', 'immov', 'import', 'imstevewilson', 'imjackyeah', 'imnotmrgreen', 'imq0knerhq', 'importantli', 'imitatia', 'implica', 'immigrantsolut', 'im_soexcit', 'implodingpika', 'impatientraid', 'imalsobor', 'immigrationuk', 'imperialist', 'imit', 'imho', 'imry2bxuzd'}
+: Stemmed list of matches of pattern \bde\w*\b
+: {'defecit', 'deleg', 'descend', 'deni', 'deepikapadukon', 'denier', 'deadmau5', 'debate2015', 'deminish', 'del', 'denim', 'desaieshita', 'demn', 'defici', 'devan4director', 'debatt', 'deepxcap', 'defenc', 'delv', 'delud', 'degrassi', 'departur', 'descript', 'deej_bng', 'destinynews_net', 'deadli', 'defense_gouv', 'deter', 'devon', 'decemb', 'dekayedd', 'deargreenplace8', 'deali', 'dedic', 'delph', 'defend', 'defi', 'demostr', 'despond', 'destinydatabas', 'deltagoodrem', 'denisefrontera', 'delhi', 'decri', 'default', 'demiroberts_', 'descenthypnosi', 'dehgeeuiem', 'defac', 'denni', 'den', 'decis', 'deennya', 'demuslim', 'dearli', 'depriv', 'decladon', 'delish', 'dessa', 'degener', 'deal', 'deregul', 'der_bluthund', 'dez7bft5fx', 'decad', 'debit', 'desir', 'deep', 'deskellybt', 'defcon', 'devoncarlscn', 'deficit', 'despit', 'deport', 'dere', 'derek_gta', 'detail', 'deedeegi', 'de2on', 'deosn', 'dethronedlwt', 'delay', 'deathcoreti', 'debat', 'der', 'deflat', 'denerivery506', 'deviou', 'deepti_ahmd', 'decencycommon', 'derekmay16', 'detector', 'determin', 'dented_deni', 'deactiv', 'deirdreokane1', 'deo', 'dekbannan', 'devout', 'dethink2surv', 'desktop', 'demonis', 'derail', 'dement', 'demongrrl51', 'dea', 'deniserayon_', 'definit', 'defin', 'deix', 'deari', 'declanwelsh', 'deci', 'defo', 'descarta', 'dejavu', 'debatingfool', 'derabbi', 'dearestdaryl', 'deffonotpc', 'deixen', 'delet', 'deepli', 'deepthroat', 'describ', 'defeat', 'de7onil6go', 'dean0133', 'deathbybaconsmel', 'deathofgrass', 'deano042', 'dev', 'deadlin', 'delayedmorn', 'deti', 'deardads1979', 'death', 'dent', 'demo', 'desper', 'depend', 'dennislami', 'dept', 'dearslim', 'denvilda1966', 'dece', 'depress', 'definetli', 'deviat', 'deeziyah', 'democrat', 'decim', 'detect', 'derogatori', 'des67jphfi', 'denbobanati', 'deidrebrock', 'decriminalis', 'defenit', 'defiant', 'deixat', 'demi', 'dekhi', 'dealwithbarbi', 'degre', 'deathcur', 'delafro_', 'desperatedav', 'decid', 'dear', 'derbi', 'dem', 'deterr', 'deffo', 'deltadaili', 'dekwpr9y7n', 'denial', 'deutschland', 'delevingn', 'devjoshi10', 'debacl', 'desplant', 'deserv', 'declind', 'deantd', 'deviousliz', 'demis', 'demoorsophi', 'definitel', 'deu', 'despair', 'devot', 'deliber', 'delight', 'deboridah86', 'deliv', 'destin', 'democraticaudit', 'devil', 'detal', 'deputi', 'de', 'debian', 'dedicatedfan', 'dezwog', 'devast', 'deniss', 'devotrav', 'debraruh', 'derekklahn', 'degakdzsjn', 'delici', 'desert', 'denis', 'deathwish', 'denounc', 'deposit', 'devastatingli', 'denoct', 'dealt', 'der_german', 'defiancegam', 'destroy', 'denniselazaro', 'desiboy34783', 'dessert', 'dead', 'destiinyy303', 'debbiegee41', 'declin', 'deoradh1', 'dermot', 'deceiv', 'decolonisedsoul', 'detest', 'deathoflabour', 'deilsheid', 'del_sharp', 'deborahjaneorr', 'derp', 'deathli', 'delphi', 'denywenyxw', 'dey', 'depth', 'deepdale62', 'demba', 'derekrootboy', 'deya', 'dem凋落したなあ', 'deliri', 'dens', 'deva_matt', 'debbi', 'def', 'det', 'deplet', 'depopul', 'demeanour', 'democraci', 'deedee_50fli', 'deadlytheroadi', 'despiteoffici', 'debbeedal', 'deth', 'designideasp', 'dernier', 'dewsburi', 'deeper', 'demissexuai', 'designthinkmak', 'defect', 'declar', 'decent', 'destruct', 'deewaniveronica', 'delta', 'depart', 'deefizzi', 'deai', 'deflect', 'decor', 'deltadelaney', 'desk', 'deceit', 'dentist', 'debt', 'deltsoulman', 'dealsuthaonotebachao', 'develop', 'denisegohemun', 'decenc', 'devolv', 'derekbateman2', 'deem', 'devolut', 'defini', 'defens', 'defenceless', 'deletedbymp', 'devic', 'deborah', 'deestrellado', 'deporsempre1', 'debut', 'denmark', 'deligraci', 'dental', 'derekhcampbel', 'deck', 'debcridland', 'denisealicia_', 'deliveri', 'deploy', 'despis', 'defilibr', 'derogatoti', 'deacti', 'delusion', 'decept', 'desmond', 'demean', 'derek', 'design', 'debbyryan_06', 'deleici', 'denisedenise__', 'dearnatalie', 'despic', 'devo', 'deaf', 'demand', 'desc', 'dermotodw', 'department', 'descrimin', 'dew', 'dejavousagain', 'debrakidd', 'derekscott1984'}
+: Stemmed list of matches of pattern \banti\w*\b
+: {'anti', 'antiausterityuk', 'antiracismday', 'antichankai', 'antinezushi', 'anticip', 'antiscot', 'antiscous'}
+
+** 8 Tags, Tagsets, and Tagging
+
+35.  [@35] Ask NLTK what tags the Penn Treebank tagset uses for nouns and verbs
+    (and show the result).
+
+    #+begin_src python :results output
+      import nltk
+      nltk.download('tagsets_json')
+      nltk.download('treebank')
+      from nltk.corpus import treebank
+      nltk.help.upenn_tagset('VB.*')
+      nltk.help.upenn_tagset('NN.*')
+    #+end_src
+
+    #+RESULTS:
+    #+begin_example
+    VB: verb, base form
+	ask assemble assess assign assume atone attention avoid bake balkanize
+	bank begin behold believe bend benefit bevel beware bless boil bomb
+	boost brace break bring broil brush build ...
+    VBD: verb, past tense
+	dipped pleaded swiped regummed soaked tidied convened halted registered
+	cushioned exacted snubbed strode aimed adopted belied figgered
+	speculated wore appreciated contemplated ...
+    VBG: verb, present participle or gerund
+	telegraphing stirring focusing angering judging stalling lactating
+	hankerin' alleging veering capping approaching traveling besieging
+	encrypting interrupting erasing wincing ...
+    VBN: verb, past participle
+	multihulled dilapidated aerosolized chaired languished panelized used
+	experimented flourished imitated reunifed factored condensed sheared
+	unsettled primed dubbed desired ...
+    VBP: verb, present tense, not 3rd person singular
+	predominate wrap resort sue twist spill cure lengthen brush terminate
+	appear tend stray glisten obtain comprise detest tease attract
+	emphasize mold postpone sever return wag ...
+    VBZ: verb, present tense, 3rd person singular
+	bases reconstructs marks mixes displeases seals carps weaves snatches
+	slumps stretches authorizes smolders pictures emerges stockpiles
+	seduces fizzes uses bolsters slaps speaks pleads ...
+    NN: noun, common, singular or mass
+	common-carrier cabbage knuckle-duster Casino afghan shed thermostat
+	investment slide humour falloff slick wind hyena override subhumanity
+	machinist ...
+    NNP: noun, proper, singular
+	Motown Venneboerger Czestochwa Ranzer Conchita Trumplane Christos
+	Oceanside Escobar Kreisler Sawyer Cougar Yvette Ervin ODI Darryl CTCA
+	Shannon A.K.C. Meltex Liverpool ...
+    NNPS: noun, proper, plural
+	Americans Americas Amharas Amityvilles Amusements Anarcho-Syndicalists
+	Andalusians Andes Andruses Angels Animals Anthony Antilles Antiques
+	Apache Apaches Apocrypha ...
+    NNS: noun, common, plural
+	undergraduates scotches bric-a-brac products bodyguards facets coasts
+	divestitures storehouses designs clubs fragrances averages
+	subjectivists apprehensions muses factory-jobs ...
+    #+end_example
+
+#  <<ran-sent>> 
+36. <<ran-sent>> Import the corpus and count the number of sentences in it, discarding
+    any uninteresting front matter such as titles and chapter headings.
+    Then show a random sentence.
+
+    #+begin_src python :results output
+      import nltk
+      nltk.download('treebank')
+      from nltk.corpus import treebank
+      sentences = treebank.sents()
+      print(f'Number of sentences in treebank: {len(sentences)}')
+      import random
+      random_int = random.randint(0, len(sentences))
+      print('Random sentence from treebank:')
+      print(sentences[random_int])
+    #+end_src
+
+    #+RESULTS:
+    : Number of sentences in treebank: 3914
+    : Random sentence from treebank:
+    : ['Later', 'yesterday', ',', 'a', 'Massachusetts', 'senate', 'committee', 'approved', 'a', 'bill', '0', '*T*-1', 'to', 'allow', 'national', 'interstate', 'banking', 'by', 'banks', 'in', 'the', 'state', '*', 'beginning', 'in', '1991', '.']
+
+
+
+
+# added explicit instruction to use a tagger <2023-10-20 Fri>
+37.  Use a tagger each token in your random sentence as 'VB'.
+
+#+begin_src python :results output
+  import nltk
+  nltk.download('treebank')
+  from nltk.corpus import treebank
+  sentences = treebank.sents()
+  import random
+  random_int = random.randint(0, len(sentences))
+  from nltk.tag import DefaultTagger
+  tagger = DefaultTagger('VB')
+  print(tagger.tag(sentences[random_int]))
+#+end_src
+
+#+RESULTS:
+: [('None', 'VB'), ('of', 'VB'), ('France', 'VB'), ("'s", 'VB'), ('wine', 'VB'), ('regions', 'VB'), ('can', 'VB'), ('steal', 'VB'), ('a', 'VB'), ('march', 'VB'), ('on', 'VB'), ('Burgundy', 'VB'), (',', 'VB'), ('however', 'VB'), ('.', 'VB')]
+
+# <<silly-tags>>
+38. <<silly-tags>> Of course that's pretty silly, but we can make it even sillier.  Build
+    a dictionary of the incorrectly tagged words in your sentence using the
+    following tags:
+# idk what this question wants, its ill defined
+#+begin_src python :results output
+  import nltk
+  nltk.download('treebank')
+  from nltk.corpus import treebank
+  sentences = treebank.sents()
+  import random
+  random_int = random.randint(0, len(sentences))
+  silly = ['FOO','BAR','EGO','NEED','ADS','DUCK','MANSE']
+  dict = {}
+  sent = sentences[random_int]
+  for token in sent:
+      random_tag = silly[random.randint(0, len(silly) - 1)]
+      dict[token] = random_tag
+  print('Random dictionary using random sentence and random silly tags:')
+  print(dict)
+#+end_src
+
+#+RESULTS:
+: Random dictionary using random sentence and random silly tags:
+: {'The': 'NEED', 'offer': 'FOO', ',': 'ADS', 'which': 'FOO', '*T*-2': 'FOO', 'was': 'MANSE', 'due': 'NEED', '*-3': 'EGO', 'to': 'ADS', 'expire': 'ADS', 'yesterday': 'FOO', 'is': 'MANSE', 'conditional': 'FOO', 'on': 'FOO', '50.1': 'DUCK', '%': 'EGO', 'of': 'DUCK', "Dunkin'": 'DUCK', 'common': 'MANSE', 'shares': 'EGO', 'a': 'DUCK', 'fully': 'EGO', 'diluted': 'BAR', 'basis': 'BAR', 'being': 'BAR', 'tendered': 'FOO', '*-1': 'FOO', 'and': 'EGO', 'the': 'FOO', 'withdrawal': 'FOO', 'company': 'FOO', "'s": 'ADS', 'poison': 'FOO', 'pill': 'MANSE', 'rights': 'DUCK', 'plan': 'DUCK', '.': 'MANSE'}
+
+#  [[ran-sent]]
+
+39. [@39]  <<bo-tagger>> Construct a lookup tagger trained on the 1000 most frequent words in
+    the Brown news category that backs off to a default tag of 'UNK'.  Use
+    that to tag the original random sentence you got in question [[ran-sent]].  Print
+    the result as the list of tuples in sentence order.  What do you
+    observe?
+
+#+begin_src python :results output
+  import nltk
+  from nltk.tag import UnigramTagger
+
+  default_tagger = nltk.DefaultTagger('UNK')
+
+  from nltk.corpus import brown
+  nltk.download('brown')
+
+  tagged_words = brown.tagged_words(categories='news')
+
+  from nltk.probability import FreqDist
+  freq_dist = FreqDist(tagged_words)
+
+  '''for word, frequency in freq_dist.most_common(100):
+      print(f'{word} : {frequency}')'''
+
+  top_freq_dist = freq_dist.most_common(1000)
+  token_tag_tuples = [tup for tup, frequency in top_freq_dist]
+  train_wrapper = [token_tag_tuples]
+
+  unigram_tagger = UnigramTagger(train_wrapper, backoff=default_tagger)
+
+  from nltk.corpus import treebank
+  sentences = treebank.sents()
+  import random
+  random_int = random.randint(0, len(sentences))
+  random_sentence = sentences[random_int]
+
+  print(unigram_tagger.tag(random_sentence))
+
+#+end_src
+
+#+RESULTS:
+: [('It', 'PPS'), ('is', 'BEZ'), ('expected', 'VBN'), ('that', 'CS'), ('common', 'UNK'), ('shares', 'NNS'), ('equal', 'UNK'), ('to', 'TO'), ('the', 'AT'), ('number', 'NN'), ('of', 'IN'), ('units', 'UNK'), ('outstanding', 'UNK'), ('--', '--'), ('about', 'IN'), ('108', 'UNK'), ('million', 'CD'), ('on', 'IN'), ('Sept.', 'UNK'), ('30', 'CD'), ('--', '--'), ('will', 'MD'), ('be', 'BE'), ('issued', 'UNK'), ('*-3', 'UNK'), ('during', 'IN'), ('the', 'AT'), ('first', 'OD'), ('quarter', 'UNK'), ('of', 'IN'), ('1990', 'UNK'), ('.', '.')]
+
+#  ran-sent and bo-tagger
+40. [@40] For your random sentence found in question [[ran-sent]] tagged with
+    the tagger you built in question [[bo-tagger]], write a
+    transformational rule the Brill tagger might discover for the each of
+    the first three UNK tags.  Put these in an example block as ordinary
+    text, /e.g./:
+#+BEGIN_EXAMPLE
+tagged sentence
+rule i:   context:  X -> Y
+#+END_EXAMPLE
+This isnt very obvious, particularly with chained UNKS
+tagged sentences
+rule 1: UNK -> JJ if tag of preceding word is CS
+rule 2: UNK -> JJ if tag of preceding word is NNS
+rule 3: UNK -> NNS if tag of preceding word is IN
+
+
+# <<to-gram>>
+41. [@41]  <<to-gram>> Example 2.2 in [[http://www.nltk.org/book/ch07.html][chapter 7]] shows a little grammar for noun phrase
+    chunking.  Let's mix it up a bit and define a grammar for "to phrases":
+    bigrams that begin with the tag =TO=.  Show the total parse and just
+    the "to phrases" (just edit away the rest unless you feel like getting
+    fancy). Use the following sentence to build and test your grammar:
+#+begin_src python :results output
+
+  # more convenient one-liner
+  tj = [('He', 'PPS'), ('had', 'HVD'), ('nothing', 'UNK'), ('to', 'TO'), ('urge', 'UNK'), ('against', 'IN'), ('it', 'PPS'), (',', ','), ('but', 'CC'), ('still', 'RB'), ('resisted', 'UNK'), ('the', 'AT'), ('idea', 'UNK'), ('of', 'IN'), ('a', 'AT'), ('letter', 'UNK'), ('of', 'IN'), ('proper', 'UNK'), ('submission', 'UNK'), (';', '.'), ('and', 'CC'), ('therefore', 'UNK'), (',', ','), ('to', 'TO'), ('make', 'VB'), ('it', 'PPS'), ('easier', 'UNK'), ('to', 'TO'), ('him', 'PPO'), (',', ','), ('as', 'CS'), ('he', 'PPS'), ('declared', 'VBD'), ('a', 'AT'), ('much', 'AP'), ('greater', 'UNK'), ('willingness', 'UNK'), ('to', 'TO'), ('make', 'VB'), ('mean', 'UNK'), ('concessions', 'UNK'), ('by', 'IN'), ('word', 'NN'), ('of', 'IN'), ('mouth', 'UNK'), ('than', 'IN'), ('on', 'IN'), ('paper', 'UNK'), (',', ','), ('it', 'PPS'), ('was', 'BEDZ'), ('resolved', 'UNK'), ('that', 'CS'), (',', ','), ('instead', 'UNK'), ('of', 'IN'), ('writing', 'UNK'), ('to', 'TO'), ('Fanny', 'UNK'), (',', ','), ('he', 'PPS'), ('should', 'MD'), ('go', 'VB'), ('to', 'TO'), ('London', 'UNK'), (',', ','), ('and', 'CC'), ('personally', 'UNK'), ('intreat', 'UNK'), ('her', 'PP$'), ('good', 'JJ'), ('offices', 'UNK'), ('in', 'IN'), ('his', 'PP$'), ('favour', 'UNK'), ('.--', 'UNK'), ('"', 'UNK'), ('And', 'CC'), ('if', 'CS'), ('they', 'PPSS'), ('really', 'RB'), ('DO', 'UNK'), ('interest', 'NN'), ('themselves', 'PPLS'), (',"', 'UNK'), ('said', 'VBD'), ('Marianne', 'UNK'), (',', ','), ('in', 'IN'), ('her', 'PP$'), ('new', 'JJ'), ('character', 'UNK'), ('of', 'IN'), ('candour', 'UNK'), (',', ','), ('"', 'UNK'), ('in', 'IN'), ('bringing', 'UNK'), ('about', 'IN'), ('a', 'AT'), ('reconciliation', 'UNK'), (',', ','), ('I', 'PPSS'), ('shall', 'UNK'), ('think', 'VB'), ('that', 'CS'), ('even', 'RB'), ('John', 'NP'), ('and', 'CC'), ('Fanny', 'UNK'), ('are', 'BER'), ('not', '*'), ('entirely', 'UNK'), ('without', 'IN'), ('merit', 'UNK'), ('."', 'UNK')]
+
+  # for prettier printing
+
+  tj = [('He', 'PPS'), ('had', 'HVD'), ('nothing', 'UNK'), ('to', 'TO'), ('urge', 'UNK'), 
+	('against', 'IN'), ('it', 'PPS'), (',', ','), ('but', 'CC'), ('still', 'RB'), 
+	('resisted', 'UNK'), ('the', 'AT'), ('idea', 'UNK'), ('of', 'IN'), ('a', 'AT'), 
+	('letter', 'UNK'), ('of', 'IN'), ('proper', 'UNK'), ('submission', 'UNK'), (';', '.'), 
+	('and', 'CC'), ('therefore', 'UNK'), (',', ','), ('to', 'TO'), ('make', 'VB'), 
+	('it', 'PPS'), ('easier', 'UNK'), ('to', 'TO'), ('him', 'PPO'), (',', ','), 
+	('as', 'CS'), ('he', 'PPS'), ('declared', 'VBD'), ('a', 'AT'), ('much', 'AP'), 
+	('greater', 'UNK'), ('willingness', 'UNK'), ('to', 'TO'), ('make', 'VB'), 
+	('mean', 'UNK'), ('concessions', 'UNK'), ('by', 'IN'), ('word', 'NN'), ('of', 'IN'), 
+	('mouth', 'UNK'), ('than', 'IN'), ('on', 'IN'), ('paper', 'UNK'), (',', ','), ('it', 'PPS'), 
+	('was', 'BEDZ'), ('resolved', 'UNK'), ('that', 'CS'), (',', ','), 
+	('instead', 'UNK'), ('of', 'IN'), ('writing', 'UNK'), ('to', 'TO'), 
+	('Fanny', 'UNK'), (',', ','), ('he', 'PPS'), ('should', 'MD'), ('go', 'VB'), 
+	('to', 'TO'), ('London', 'UNK'), (',', ','), ('and', 'CC'), ('personally', 'UNK'), 
+	('intreat', 'UNK'), ('her', 'PP$'), ('good', 'JJ'), ('offices', 'UNK'), ('in', 'IN'), 
+	('his', 'PP$'), ('favour', 'UNK'), ('.--', 'UNK'), ('"', 'UNK'), ('And', 'CC'), 
+	('if', 'CS'), ('they', 'PPSS'), ('really', 'RB'), ('DO', 'UNK'), ('interest', 'NN'), 
+	('themselves', 'PPLS'), (',"', 'UNK'), ('said', 'VBD'), ('Marianne', 'UNK'), 
+	(',', ','), ('in', 'IN'), ('her', 'PP$'), ('new', 'JJ'), ('character', 'UNK'), 
+	('of', 'IN'), ('candour', 'UNK'), (',', ','), ('"', 'UNK'), ('in', 'IN'), 
+	('bringing', 'UNK'), ('about', 'IN'), ('a', 'AT'), ('reconciliation', 'UNK'), 
+	(',', ','), ('I', 'PPSS'), ('shall', 'UNK'), ('think', 'VB'), ('that', 'CS'), 
+	('even', 'RB'), ('John', 'NP'), ('and', 'CC'), ('Fanny', 'UNK'), ('are', 'BER'), 
+	('not', '*'), ('entirely', 'UNK'), ('without', 'IN'), ('merit', 'UNK'), ('."', 'UNK')]
+
+  import nltk
+  grammar = "TO_chunk: {<TO><.*>}"
+  parser = nltk.RegexpParser(grammar)
+  result = parser.parse(tj)
+  print(result)
+  result = [subtree for subtree in result.subtrees() if subtree.label() == 'TO_chunk']
+  print(result)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+(S
+  He/PPS
+  had/HVD
+  nothing/UNK
+  (TO_chunk to/TO urge/UNK)
+  against/IN
+  it/PPS
+  ,/,
+  but/CC
+  still/RB
+  resisted/UNK
+  the/AT
+  idea/UNK
+  of/IN
+  a/AT
+  letter/UNK
+  of/IN
+  proper/UNK
+  submission/UNK
+  ;/.
+  and/CC
+  therefore/UNK
+  ,/,
+  (TO_chunk to/TO make/VB)
+  it/PPS
+  easier/UNK
+  (TO_chunk to/TO him/PPO)
+  ,/,
+  as/CS
+  he/PPS
+  declared/VBD
+  a/AT
+  much/AP
+  greater/UNK
+  willingness/UNK
+  (TO_chunk to/TO make/VB)
+  mean/UNK
+  concessions/UNK
+  by/IN
+  word/NN
+  of/IN
+  mouth/UNK
+  than/IN
+  on/IN
+  paper/UNK
+  ,/,
+  it/PPS
+  was/BEDZ
+  resolved/UNK
+  that/CS
+  ,/,
+  instead/UNK
+  of/IN
+  writing/UNK
+  (TO_chunk to/TO Fanny/UNK)
+  ,/,
+  he/PPS
+  should/MD
+  go/VB
+  (TO_chunk to/TO London/UNK)
+  ,/,
+  and/CC
+  personally/UNK
+  intreat/UNK
+  her/PP$
+  good/JJ
+  offices/UNK
+  in/IN
+  his/PP$
+  favour/UNK
+  .--/UNK
+  "/UNK
+  And/CC
+  if/CS
+  they/PPSS
+  really/RB
+  DO/UNK
+  interest/NN
+  themselves/PPLS
+  ,"/UNK
+  said/VBD
+  Marianne/UNK
+  ,/,
+  in/IN
+  her/PP$
+  new/JJ
+  character/UNK
+  of/IN
+  candour/UNK
+  ,/,
+  "/UNK
+  in/IN
+  bringing/UNK
+  about/IN
+  a/AT
+  reconciliation/UNK
+  ,/,
+  I/PPSS
+  shall/UNK
+  think/VB
+  that/CS
+  even/RB
+  John/NP
+  and/CC
+  Fanny/UNK
+  are/BER
+  not/*
+  entirely/UNK
+  without/IN
+  merit/UNK
+  ."/UNK)
+[Tree('TO_chunk', [('to', 'TO'), ('urge', 'UNK')]), Tree('TO_chunk', [('to', 'TO'), ('make', 'VB')]), Tree('TO_chunk', [('to', 'TO'), ('him', 'PPO')]), Tree('TO_chunk', [('to', 'TO'), ('make', 'VB')]), Tree('TO_chunk', [('to', 'TO'), ('Fanny', 'UNK')]), Tree('TO_chunk', [('to', 'TO'), ('London', 'UNK')])]
+#+end_example
+
+#  [[to-gram]], 40
+42.  [@42] What do you observe in your results for question [[to-gram]]?  Why do you think
+    this is happening?
+
+    For every token that does not match the grammar the parser produces a single leaf without being a part of the chunk. Otherwise a chunk is produced witht the word to and the following token which is either a noun type of a verb. I do not observe any interesting patterns.
+
+
+
+* Grading Scale
+
+# revised <2021-10-14 Thu> to correct typo
+
+This homework is worth 15 points.  Complete answers for question 1, here
+and in the Slack channel, are required: otherwise /no/ points will be
+awarded.  The grading scale is:
+
+| fraction correctly reviewed and answered | points awarded |
+|------------------------------------------+----------------|
+| \(\ge 0.95\)                             |             15 |
+| 0.90 -- 0.94                             |             14 |
+| 0.85 -- 0.89                             |             13 |
+| 0.80 -- 0.84                             |             12 |
+| 0.75 -- 0.79                             |             11 |
+| 0.70 -- 0.74                             |             10 |
+| 0.65 -- 0.69                             |              9 |
+| 0.60 -- 0.64                             |              8 |
+| 0.55 -- 0.59                             |              7 |
+| 0.50 -- 0.54                             |              6 |
+| 0.45 -- 0.49                             |              5 |
+| 0.40 -- 0.44                             |              4 |
+| 0.35 -- 0.39                             |              3 |
+| 0.30 -- 0.34                             |              2 |
+| 0.25 -- 0.29                             |              1 |
+| \(< 0.25\)                               |              0 |
+
+
+
+
+* Scoring
+
+
+
+
+|     question | ok? |
+|--------------+-----|
+|            1 |     |
+|            2 |     |
+|            3 |     |
+|            4 |     |
+|            5 |     |
+|            6 |     |
+|            7 |     |
+|            8 |     |
+|            9 |     |
+|           10 |     |
+|           11 |     |
+|           12 |     |
+|           13 |     |
+|           14 |     |
+|           15 |     |
+|           16 |     |
+|           17 |     |
+|           18 |     |
+|           19 |     |
+|           20 |     |
+|           21 |     |
+|           22 |     |
+|           23 |     |
+|           24 |     |
+|           25 |     |
+|           26 |     |
+|           27 |     |
+|           28 |     |
+|           29 |     |
+|           30 |     |
+|           31 |     |
+|           32 |     |
+|           33 |     |
+|           34 |     |
+|           35 |     |
+|           36 |     |
+|           37 |     |
+|           38 |     |
+|           39 |     |
+|           40 |     |
+|           41 |     |
+|           42 |     |
+|--------------+-----|
+|  total score |   0 |
+|     fraction |   0 |
+| total points |     |
+#+TBLFM: @44$2=vsum(@I..@II)::@45$2=@-1/(@-2$1)
+
